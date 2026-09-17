@@ -55,6 +55,6 @@ Copy-Item (Join-Path $PSScriptRoot 'vercel.json') (Join-Path $outDir 'vercel.jso
 Write-Host "`nExported to $outDir" -ForegroundColor Green
 Get-ChildItem $outDir | Select-Object Name, @{n='Size';e={'{0:N1} MB' -f ($_.Length / 1MB)}} | Format-Table -AutoSize
 
-Write-Host "Next: play it through locally, then deploy:" -ForegroundColor Yellow
+Write-Host "This is a LOCAL build for testing. Deploying happens on git push," -ForegroundColor Yellow
+Write-Host "via .github/workflows/deploy.yml. To try this build in a browser:" -ForegroundColor Yellow
 Write-Host "    python -m http.server 8000 --directory web" -ForegroundColor DarkGray
-Write-Host "    cd web; npx vercel deploy --prod" -ForegroundColor DarkGray
