@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://gmeoe7uq2h4l"]
+
+[ext_resource type="Theme" uid="uid://bq1jodwh5ubj1" path="res://Themes/CodeBlockTheme.theme" id="1_yj5yh"]
+[ext_resource type="Script" uid="uid://fql13ewgyrla" path="res://Scripts/code_block.gd" id="2_bwegr"]
+
+[node name="CodeBlock" type="Button"]
+custom_minimum_size = Vector2(200, 50)
+theme = ExtResource("1_yj5yh")
+text = "NORMALCO"
+script = ExtResource("2_bwegr")

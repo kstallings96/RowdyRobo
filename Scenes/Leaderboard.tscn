@@ -1,0 +1,65 @@
+[gd_scene load_steps=2 format=3 uid="uid://b2h8ok8yfc7wb"]
+
+[sub_resource type="Theme" id="Theme_j1gah"]
+
+[node name="Leaderboard" type="Node2D"]
+
+[node name="OldBoard" type="MarginContainer" parent="."]
+visible = false
+
+[node name="HighScores" type="TextureRect" parent="OldBoard"]
+layout_mode = 2
+
+[node name="Board" type="VBoxContainer" parent="."]
+offset_left = 232.0
+offset_top = 3.0
+offset_right = 1738.0
+offset_bottom = 1070.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 48
+alignment = 1
+
+[node name="TitleContainer" type="CenterContainer" parent="Board"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Board/TitleContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 72
+text = "Leaderboard"
+horizontal_alignment = 1
+
+[node name="MessageContainer" type="CenterContainer" parent="Board"]
+visible = false
+layout_mode = 2
+
+[node name="TextMessage" type="Label" parent="Board/MessageContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Loading scores..."
+
+[node name="HighScores" type="CenterContainer" parent="Board"]
+layout_mode = 2
+theme = SubResource("Theme_j1gah")
+
+[node name="ScoreItemContainer" type="VBoxContainer" parent="Board/HighScores"]
+layout_mode = 2
+
+[node name="CloseButtonContainer" type="CenterContainer" parent="Board"]
+layout_mode = 2
+
+[node name="CloseButton" parent="Board/CloseButtonContainer"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
+custom_minimum_size = Vector2(600, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Close Leaderboard"
+script = null

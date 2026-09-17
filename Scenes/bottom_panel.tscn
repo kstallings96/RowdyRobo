@@ -1,0 +1,107 @@
+[gd_scene load_steps=4 format=3 uid="uid://hurva27pe0qy"]
+
+[ext_resource type="Script" uid="uid://gnrp5gb1l3me" path="res://Scripts/bottom_panel.gd" id="1_q5e3e"]
+[ext_resource type="Theme" uid="uid://b5fspwopkw78g" path="res://Themes/MarginTheme.tres" id="1_q7ks8"]
+[ext_resource type="PackedScene" uid="uid://gmeoe7uq2h4l" path="res://Scenes/code_block.tscn" id="2_q5e3e"]
+
+[node name="BottomPanel" type="Panel"]
+clip_contents = true
+script = ExtResource("1_q5e3e")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_q7ks8")
+
+[node name="HFlowContainer" type="HFlowContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="CodeBlock" parent="MarginContainer/HFlowContainer" instance=ExtResource("2_q5e3e")]
+layout_mode = 2
+keep_pressed_outside = true
+text = "CODEBLOCK"
+action_type = 1
+
+[node name="CodeBlock2" parent="MarginContainer/HFlowContainer" instance=ExtResource("2_q5e3e")]
+layout_mode = 2
+keep_pressed_outside = true
+text = "CODEBLOCK"
+action_type = 2
+
+[node name="CodeBlock3" parent="MarginContainer/HFlowContainer" instance=ExtResource("2_q5e3e")]
+layout_mode = 2
+keep_pressed_outside = true
+text = "CODEBLOCK"
+action_type = 3
+
+[node name="CodeBlock4" parent="MarginContainer/HFlowContainer" instance=ExtResource("2_q5e3e")]
+layout_mode = 2
+keep_pressed_outside = true
+text = "CODEBLOCK"
+action_type = 4
+
+[node name="CodeBlock5" parent="MarginContainer/HFlowContainer" instance=ExtResource("2_q5e3e")]
+layout_mode = 2
+keep_pressed_outside = true
+text = "CODEBLOCK"
+action_type = 5
+
+[node name="CodeBlock6" parent="MarginContainer/HFlowContainer" instance=ExtResource("2_q5e3e")]
+layout_mode = 2
+keep_pressed_outside = true
+text = "CODEBLOCK"
+action_type = 6
+
+[node name="CodeBlock7" parent="MarginContainer/HFlowContainer" instance=ExtResource("2_q5e3e")]
+layout_mode = 2
+keep_pressed_outside = true
+text = "CODEBLOCK"
+action_type = 7
+
+[node name="CodeBlock8" parent="MarginContainer/HFlowContainer" instance=ExtResource("2_q5e3e")]
+layout_mode = 2
+keep_pressed_outside = true
+text = "CODEBLOCK"
+action_type = 8
+
+[node name="CodeBlock9" parent="MarginContainer/HFlowContainer" instance=ExtResource("2_q5e3e")]
+layout_mode = 2
+keep_pressed_outside = true
+text = "CODEBLOCK"
+action_type = 9
+
+[node name="CodeBlock10" parent="MarginContainer/HFlowContainer" instance=ExtResource("2_q5e3e")]
+layout_mode = 2
+keep_pressed_outside = true
+text = "CODEBLOCK"
+action_type = 10
+
+[node name="CodeBlock11" parent="MarginContainer/HFlowContainer" instance=ExtResource("2_q5e3e")]
+layout_mode = 2
+keep_pressed_outside = true
+text = "CODEBLOCK"
+action_type = 11
+
+[node name="CodeBlock12" parent="MarginContainer/HFlowContainer" instance=ExtResource("2_q5e3e")]
+layout_mode = 2
+keep_pressed_outside = true
+text = "CODEBLOCK"
+action_type = 12
+
+[node name="CodeBlock13" parent="MarginContainer/HFlowContainer" instance=ExtResource("2_q5e3e")]
+layout_mode = 2
+keep_pressed_outside = true
+text = "CODEBLOCK"
+action_type = 13
+
+[node name="HintTimer" type="Timer" parent="."]
+wait_time = 30.0
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="HintTimer" to="." method="_on_hint_timer_timeout"]

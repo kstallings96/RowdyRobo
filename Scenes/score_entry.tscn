@@ -1,0 +1,46 @@
+[gd_scene load_steps=3 format=3 uid="uid://cb7ig2yadkjrc"]
+
+[ext_resource type="FontFile" uid="uid://5773w4h1ojxq" path="res://Fonts/KGRedHands.ttf" id="1_2u2l5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uo0qu"]
+bg_color = Color(0.5952049, 0.7882751, 1, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_right = 80
+corner_radius_bottom_left = 80
+
+[node name="ScoreEntry" type="Panel"]
+custom_minimum_size = Vector2(0, 100)
+theme_override_styles/panel = SubResource("StyleBoxFlat_uo0qu")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="NameLabel" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_2u2l5")
+theme_override_font_sizes/font_size = 60
+text = "PLAYER 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_2u2l5")
+theme_override_font_sizes/font_size = 60
+text = "203"
+horizontal_alignment = 1
+vertical_alignment = 1

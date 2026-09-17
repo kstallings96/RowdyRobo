@@ -1,0 +1,176 @@
+[gd_scene load_steps=15 format=3 uid="uid://d3pco7ohrte2y"]
+
+[ext_resource type="Script" uid="uid://c2qk7lw7aa7wj" path="res://Scripts/main_menu.gd" id="1_28flt"]
+[ext_resource type="Texture2D" uid="uid://db7p5lde12lqi" path="res://icon.svg" id="2_48xlc"]
+[ext_resource type="Shader" uid="uid://b7ixma8lv4jr8" path="res://Shaders/scrolling.gdshader" id="2_cp0ys"]
+[ext_resource type="Texture2D" uid="uid://651vug45u1sy" path="res://Sprites/YellowPlaid.jpg" id="2_n45e2"]
+[ext_resource type="Theme" uid="uid://bx3if8ofhpi00" path="res://Themes/TitleText.theme" id="3_opfnp"]
+[ext_resource type="Theme" uid="uid://c0lvx4iie64la" path="res://Themes/MainMenuTextEditTheme.theme" id="4_opfnp"]
+[ext_resource type="Shader" uid="uid://c7rip2qb75ywu" path="res://Shaders/wiggle.gdshader" id="4_yhxw7"]
+[ext_resource type="Theme" uid="uid://bg6m0u6rl2kgy" path="res://Themes/ToolTipText.theme" id="5_cp0ys"]
+[ext_resource type="Shader" uid="uid://c164surlibc7b" path="res://Shaders/float.gdshader" id="7_trj04"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yhxw7"]
+shader = ExtResource("2_cp0ys")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_trj04"]
+shader = ExtResource("4_yhxw7")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_16hvj"]
+shader = ExtResource("7_trj04")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yhxw7"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 1, 1, 0.56078434)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(0.19973174, 0.19973177, 0.19973159, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+corner_detail = 5
+
+[sub_resource type="Theme" id="Theme_trj04"]
+Panel/styles/panel = SubResource("StyleBoxFlat_yhxw7")
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_28flt")
+
+[node name="Background" type="TextureRect" parent="."]
+texture_repeat = 2
+material = SubResource("ShaderMaterial_yhxw7")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_n45e2")
+stretch_mode = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_top = 100
+theme_override_constants/margin_right = 100
+theme_override_constants/margin_bottom = 100
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer2/CenterContainer"]
+material = SubResource("ShaderMaterial_trj04")
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("3_opfnp")
+text = "Welcome to RowdyRobo"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/margin_left = 500
+theme_override_constants/margin_right = 500
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer2/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 29
+
+[node name="FirstNameLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("4_opfnp")
+placeholder_text = "Kayleigh"
+clear_button_enabled = true
+caret_blink = true
+
+[node name="LastNameLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("4_opfnp")
+placeholder_text = "S"
+clear_button_enabled = true
+caret_blink = true
+
+[node name="GradeOptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("4_opfnp")
+selected = 0
+item_count = 7
+popup/item_0/text = "Select Grade"
+popup/item_0/id = 0
+popup/item_0/separator = true
+popup/item_1/text = "5th Grade"
+popup/item_1/id = 1
+popup/item_2/text = "6th Grade"
+popup/item_2/id = 2
+popup/item_3/text = "7th Grade"
+popup/item_3/id = 3
+popup/item_4/text = "8th Grade"
+popup/item_4/id = 4
+popup/item_5/text = "9th Grade"
+popup/item_5/id = 5
+popup/item_6/text = "Other"
+popup/item_6/id = 6
+
+[node name="StartButton" type="Button" parent="MarginContainer/VBoxContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("4_opfnp")
+text = "Start"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer2/HBoxContainer"]
+material = SubResource("ShaderMaterial_16hvj")
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("2_48xlc")
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(872, 250)
+layout_mode = 2
+size_flags_vertical = 0
+theme = SubResource("Theme_trj04")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer2/HBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer2/HBoxContainer/Panel/MarginContainer"]
+layout_mode = 2
+theme = ExtResource("5_cp0ys")
+text = "Hey there! I’m RowdyRobo, and I’ve got some rooms to clean. Want to help me learn cool algorithms so I can finish my tasks quicker? I need your help! "
+fit_content = true
+scroll_active = false
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer2/MarginContainer/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]

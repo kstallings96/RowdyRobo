@@ -1,0 +1,20 @@
+~ phase_1
+RowdyRobo: Great work! You are a coding PRO!   
+- Next
+RowdyRobo: Welcome to my next challenge, cleaning up my library! [wait =1] To do this we need a clever algorithm.  
+- I'm clever, let me try!  
+RowdyRobo: We will likely have to use a pink "conditional" statement. One of the "ifObstacle_____" blocks.  
+- Ok
+RowdyRobo: With these blocks, if the code recognizes them as true (example, there is an obstable in front of me), then it will execute the instruction block you put directly below it. 
+- I think i need an example 
+RowdyRobo: Great, thank you for asking me to clarify! Lets say you have organized the blocks organized as they are now [wait=2]. It is telling me to move forward one block, [wait=1], check to see if there is an obstacle in front of me, and if there is, I will turn around 180 degrees. 
+- ok, what if there is not a wall or object in front of you? 
+RowdyRobo: If not, I go back up to the top of the code. [wait =1] Now we start again, and I move forward one block, then check for obstables, and turn if necessary. 
+- I think i get it
+RowdyRobo: I know you got this! I think we need something that moves me forwards, and if there is an obstable in front of me, turns to the left. 
+- I can do that
+RowdyRobo: You sure can! play around with the blocks, see how to get me to move in a [wave] spiral [/wave]
+- I'm ready! => END!
+- I'm not ready! => phase_1
+
+=> END

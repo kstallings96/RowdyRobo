@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://cut3meq5gnfgp"
+path="res://.godot/imported/phase_2_random_help.dialogue-a5a331acaa1ff1a5e9a49615f0295d3c.tres"
+
+[deps]
+
+source_file="res://Dialogues/phase_2_random_help.dialogue"
+dest_files=["res://.godot/imported/phase_2_random_help.dialogue-a5a331acaa1ff1a5e9a49615f0295d3c.tres"]
+
+[params]
+
+defaults=true

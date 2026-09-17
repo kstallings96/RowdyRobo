@@ -1,0 +1,5 @@
+{
+  "_comment": "Copy to config.json and fill in. Both values are PUBLIC by design: the anon key ships in the build and is readable in devtools on any Supabase app. Row-level security (supabase/schema.sql) is what protects the data. NEVER put the service_role key here — it bypasses RLS completely. Use it only from your own machine when pulling data for analysis.",
+  "supabase_url": "https://YOUR-PROJECT-REF.supabase.co",
+  "supabase_anon_key": "your-anon-public-key"
+}

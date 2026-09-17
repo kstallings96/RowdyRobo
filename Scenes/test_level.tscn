@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=3 uid="uid://bl02qelmb61yc"]
+
+[ext_resource type="PackedScene" uid="uid://bxs7a7tj74d4y" path="res://Scenes/mapTest.tscn" id="1_iti4p"]
+
+[node name="TestLevel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VSplitContainer" type="VSplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 21.0
+offset_right = 2.0
+offset_bottom = 21.0
+grow_horizontal = 2
+grow_vertical = 2
+drag_area_highlight_in_editor = true
+
+[node name="CenterContainer" type="CenterContainer" parent="VSplitContainer"]
+layout_mode = 2
+
+[node name="Node2D" parent="VSplitContainer/CenterContainer" instance=ExtResource("1_iti4p")]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer"]
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="VSplitContainer/HBoxContainer"]
+custom_minimum_size = Vector2(500, 100)
+layout_mode = 2
+color = Color(0.84403056, 0.6664744, 0.4829995, 1)

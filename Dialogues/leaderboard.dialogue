@@ -1,0 +1,15 @@
+~ leaderboard
+
+RowdyRobo: Amazing Work! 
+- Thanks!
+RowdyRobo: I noticed that the only way for your algorithm to work well was to introduce a little [wave]randomness[/wave]!
+- How come?
+RowdyRobo: Randomness is how some of the best AI algorithms work! In order to effectiveley explore different paths, the optimal strategy seems to be adding in some randomness!
+- Wow that's some amazing insight!
+RowdyRobo: And I'm only one household tool. You should try to think about other tools and objects in your house that may use some AI algorithms, even if they don't show it!
+- Yeah!
+RowdyRobo: Great! Here's a leaderboard of all the other students algorithms. You should try again and see if you can beat them!
+- Let me see! => END!
+- What was that again? => leaderboard
+
+=> END

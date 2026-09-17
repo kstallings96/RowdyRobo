@@ -1,0 +1,159 @@
+[gd_scene load_steps=19 format=3 uid="uid://mfg08ypbc3t5"]
+
+[ext_resource type="Script" uid="uid://gq6t3exia1rk" path="res://Scenes/welcome_2.gd" id="1_bjmxc"]
+[ext_resource type="Shader" uid="uid://b7ixma8lv4jr8" path="res://Shaders/scrolling.gdshader" id="2_76qky"]
+[ext_resource type="Texture2D" uid="uid://m4mqvvose31t" path="res://Sprites/sky-blue-white-tartan-check-600nw-2427233445.webp" id="3_4h6q5"]
+[ext_resource type="Theme" uid="uid://b5fspwopkw78g" path="res://Themes/MarginTheme.tres" id="4_bjmxc"]
+[ext_resource type="Shader" uid="uid://c7rip2qb75ywu" path="res://Shaders/wiggle.gdshader" id="5_753a1"]
+[ext_resource type="Theme" uid="uid://bx3if8ofhpi00" path="res://Themes/TitleText.theme" id="6_sbpvk"]
+[ext_resource type="Shader" uid="uid://c164surlibc7b" path="res://Shaders/float.gdshader" id="7_76qky"]
+[ext_resource type="Texture2D" uid="uid://db7p5lde12lqi" path="res://icon.svg" id="8_4h6q5"]
+[ext_resource type="Texture2D" uid="uid://bxqovfmhxm4ig" path="res://Sprites/random.png" id="9_4h6q5"]
+[ext_resource type="Theme" uid="uid://bg6m0u6rl2kgy" path="res://Themes/ToolTipText.theme" id="9_bjmxc"]
+[ext_resource type="Texture2D" uid="uid://dxh5atjrfd324" path="res://Sprites/code blocks.png" id="10_bjmxc"]
+[ext_resource type="PackedScene" uid="uid://cyorx7axit2lq" path="res://Scenes/right_panel_demo.tscn" id="11_753a1"]
+[ext_resource type="PackedScene" uid="uid://hurva27pe0qy" path="res://Scenes/bottom_panel.tscn" id="12_sbpvk"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8oaco"]
+shader = ExtResource("2_76qky")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5dt0q"]
+shader = ExtResource("5_753a1")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_753a1"]
+shader = ExtResource("7_76qky")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yhxw7"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 1, 1, 0.56078434)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(0.19973174, 0.19973177, 0.19973159, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+corner_detail = 5
+
+[sub_resource type="Theme" id="Theme_sbpvk"]
+Panel/styles/panel = SubResource("StyleBoxFlat_yhxw7")
+
+[node name="WelcomeScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_bjmxc")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_8oaco")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_4h6q5")
+stretch_mode = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("4_bjmxc")
+theme_override_constants/margin_left = 500
+theme_override_constants/margin_top = 125
+theme_override_constants/margin_right = 500
+theme_override_constants/margin_bottom = 125
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+material = SubResource("ShaderMaterial_5dt0q")
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("6_sbpvk")
+text = "Welcome, Robot Coders! "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+material = SubResource("ShaderMaterial_753a1")
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("8_4h6q5")
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(1000, 300)
+layout_mode = 2
+size_flags_vertical = 0
+theme = SubResource("Theme_sbpvk")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -2.0
+offset_right = -2.0
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/HBoxContainer/Panel/MarginContainer"]
+layout_mode = 2
+theme = ExtResource("9_bjmxc")
+text = "Algorithms are simple, step-by-step instructions—just like a recipe you might follow when baking a cake. In this game, you get to give those instructions! You’ll use blocks to give me clear, ordered steps to clean up a messy room."
+fit_content = true
+scroll_active = false
+
+[node name="Random" type="Sprite2D" parent="."]
+position = Vector2(686.90625, 608.84375)
+scale = Vector2(0.8562174, 0.80512774)
+texture = ExtResource("9_4h6q5")
+
+[node name="RightPanel" parent="." instance=ExtResource("11_753a1")]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.546
+anchor_bottom = 0.5
+offset_left = 2099.0
+offset_top = 225.0
+offset_right = 1619.6799
+offset_bottom = 475.0
+
+[node name="BottomPanel" parent="." instance=ExtResource("12_sbpvk")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.013
+anchor_right = 0.149
+anchor_bottom = 0.19700001
+offset_left = 1336.04
+offset_top = 1279.0
+offset_right = 2447.92
+offset_bottom = 1327.24
+
+[node name="CodeBlocks" type="Sprite2D" parent="."]
+position = Vector2(1584, 606)
+texture = ExtResource("10_bjmxc")

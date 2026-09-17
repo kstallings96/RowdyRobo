@@ -1,0 +1,235 @@
+[gd_scene load_steps=9 format=3 uid="uid://clbjj6xkvlbpb"]
+
+[ext_resource type="Script" uid="uid://cxfnfnoy8huxa" path="res://Scripts/welcome_screen.gd" id="1_g3ocs"]
+[ext_resource type="Texture2D" uid="uid://m4mqvvose31t" path="res://Sprites/sky-blue-white-tartan-check-600nw-2427233445.webp" id="2_1vke3"]
+[ext_resource type="Theme" uid="uid://bx3if8ofhpi00" path="res://Themes/TitleText.theme" id="2_wvf1o"]
+[ext_resource type="FontFile" uid="uid://bi8egcam55ec8" path="res://Fonts/Camcode Free.ttf" id="3_asssd"]
+[ext_resource type="Texture2D" uid="uid://db7p5lde12lqi" path="res://icon.svg" id="5_wvf1o"]
+[ext_resource type="Texture2D" uid="uid://xobsfcmlbixq" path="res://Sprites/arrow-right-black-outline-md.png" id="6_1vke3"]
+[ext_resource type="FontFile" uid="uid://duet0ln2qsyd3" path="res://Fonts/American Captain.ttf" id="7_1wttx"]
+[ext_resource type="Theme" uid="uid://du1kqwb5qmf5w" path="res://Themes/ButtonTheme.theme" id="7_jdskd"]
+
+[node name="WelcomeScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_g3ocs")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_1vke3")
+stretch_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_top = 33.0
+offset_right = 1920.0
+offset_bottom = 1047.0
+size_flags_vertical = 4
+theme_override_constants/separation = 74
+
+[node name="CenterContainer2" type="CenterContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer/CenterContainer2"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("2_wvf1o")
+text = "Welcome to RowdyRobo"
+
+[node name="ColorRect" type="ColorRect" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 160)
+layout_mode = 2
+color = Color(0.7523888, 0.33161548, 0.023874296, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ColorRect"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.286
+anchor_right = 1.0
+anchor_bottom = 0.678
+offset_top = -97.0
+offset_bottom = 97.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label6" type="Label" parent="VBoxContainer/ColorRect/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7421628, 0.9020915, 0.9830583, 1)
+theme_override_fonts/font = ExtResource("3_asssd")
+theme_override_font_sizes/font_size = 40
+text = "How to play : "
+
+[node name="Label3" type="Label" parent="VBoxContainer/ColorRect/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7421628, 0.9020915, 0.9830583, 1)
+theme_override_fonts/font = ExtResource("3_asssd")
+theme_override_font_sizes/font_size = 39
+text = "In this game, you’ll guide a robot vacuum through three phases to discover 
+how algorithms shape its behavior.
+Alorgithms are the building blocks of AI! "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 197
+
+[node name="RightArrow" type="TextureRect" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("6_1vke3")
+expand_mode = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/RightArrow"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.98655075, 1.0183786)
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 0
+
+[node name="Label4" type="Label" parent="VBoxContainer/HBoxContainer/RightArrow/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(0.98608834, 0.46582115, 0.13644552, 1)
+theme_override_fonts/font = ExtResource("7_1wttx")
+theme_override_font_sizes/font_size = 60
+text = "Phase 0: "
+
+[node name="Label5" type="Label" parent="VBoxContainer/HBoxContainer/RightArrow/MarginContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98608834, 0.46582115, 0.13644552, 1)
+theme_override_fonts/font = ExtResource("3_asssd")
+theme_override_font_sizes/font_size = 28
+text = "Learn the basics of programming blocks to move your robot straight ahead."
+autowrap_mode = 3
+
+[node name="RightArrow2" type="TextureRect" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("6_1vke3")
+expand_mode = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/RightArrow2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="Label4" type="Label" parent="VBoxContainer/HBoxContainer/RightArrow2/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(0.7701472, 0.34031639, 0.026184477, 1)
+theme_override_fonts/font = ExtResource("7_1wttx")
+theme_override_font_sizes/font_size = 60
+text = "Phase 1: "
+
+[node name="Label5" type="Label" parent="VBoxContainer/HBoxContainer/RightArrow2/MarginContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7701472, 0.34031639, 0.026184477, 1)
+theme_override_fonts/font = ExtResource("3_asssd")
+theme_override_font_sizes/font_size = 28
+text = "Build a spiral algorithm to help the robot clean efficiently."
+autowrap_mode = 3
+
+[node name="RightArrow3" type="TextureRect" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("6_1vke3")
+expand_mode = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/RightArrow3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="Label4" type="Label" parent="VBoxContainer/HBoxContainer/RightArrow3/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(0.59466285, 0.2555075, 0.0120044835, 1)
+theme_override_fonts/font = ExtResource("7_1wttx")
+theme_override_font_sizes/font_size = 60
+text = "Phase 2: "
+
+[node name="Label5" type="Label" parent="VBoxContainer/HBoxContainer/RightArrow3/MarginContainer"]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.59466285, 0.2555075, 0.0120044835, 1)
+theme_override_fonts/font = ExtResource("3_asssd")
+theme_override_font_sizes/font_size = 28
+text = "Explore how a random algorithm changes the robot’s movement."
+autowrap_mode = 3
+
+[node name="Icon" type="TextureRect" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+texture = ExtResource("5_wvf1o")
+expand_mode = 3
+
+[node name="ColorRect2" type="ColorRect" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+color = Color(0.45849437, 0.19037914, 0.006702159, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/ColorRect2"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -18.28125
+offset_bottom = 18.28125
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label5" type="Label" parent="VBoxContainer/ColorRect2/CenterContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_asssd")
+theme_override_font_sizes/font_size = 36
+text = "After mastering these phases, enter the Challenge Level to design and test your own cleaning algorithms!"
+horizontal_alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="ContinueButton" type="Button" parent="VBoxContainer/CenterContainer"]
+layout_mode = 2
+theme = ExtResource("7_jdskd")
+theme_override_colors/font_color = Color(0.0035191544, 0.0035191746, 0.0035191574, 1)
+theme_override_font_sizes/font_size = 42
+text = "Got It, Let's Go!"
+
+[connection signal="pressed" from="VBoxContainer/CenterContainer/ContinueButton" to="." method="_on_continue_button_pressed"]

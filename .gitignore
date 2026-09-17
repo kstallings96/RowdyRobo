@@ -1,4 +1,14 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
-/Scripts/env_paths.gd
+/test_export/
+
+# Stale editor scratch files
+*.tscn[0-9]*.tmp
+
+# NOTE: web/ is deliberately NOT ignored. Vercel cannot run the Godot exporter,
+# so the exported build is committed and served as static files. See DEPLOY.md.
+#
+# config.json is also committed on purpose. The Supabase anon key is public by
+# design — row-level security is what protects the data. The service_role key
+# must never appear in this repo.

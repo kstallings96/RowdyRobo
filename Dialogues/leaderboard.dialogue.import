@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://cisug0xfssy56"
+path="res://.godot/imported/leaderboard.dialogue-b8548592c8e1efc2d8aa1a37181240d7.tres"
+
+[deps]
+
+source_file="res://Dialogues/leaderboard.dialogue"
+dest_files=["res://.godot/imported/leaderboard.dialogue-b8548592c8e1efc2d8aa1a37181240d7.tres"]
+
+[params]
+
+defaults=true

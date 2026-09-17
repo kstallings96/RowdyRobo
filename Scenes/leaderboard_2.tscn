@@ -1,0 +1,119 @@
+[gd_scene load_steps=12 format=3 uid="uid://ce72dl6uolfol"]
+
+[ext_resource type="Script" uid="uid://dd7lcxi2mkyaa" path="res://Scripts/leaderboard_2.gd" id="1_1wv0i"]
+[ext_resource type="Theme" uid="uid://b5fspwopkw78g" path="res://Themes/MarginTheme.tres" id="1_soe5i"]
+[ext_resource type="Theme" uid="uid://bx3if8ofhpi00" path="res://Themes/TitleText.theme" id="2_7qo7o"]
+[ext_resource type="Shader" uid="uid://b7ixma8lv4jr8" path="res://Shaders/scrolling.gdshader" id="2_ip83g"]
+[ext_resource type="Texture2D" uid="uid://m4mqvvose31t" path="res://Sprites/sky-blue-white-tartan-check-600nw-2427233445.webp" id="3_hj6bx"]
+[ext_resource type="Shader" uid="uid://c7rip2qb75ywu" path="res://Shaders/wiggle.gdshader" id="5_dnnac"]
+[ext_resource type="Theme" uid="uid://du1kqwb5qmf5w" path="res://Themes/ButtonTheme.theme" id="7_dnnac"]
+[ext_resource type="PackedScene" uid="uid://cb7ig2yadkjrc" path="res://Scenes/score_entry.tscn" id="7_ly1k5"]
+[ext_resource type="FontFile" uid="uid://5773w4h1ojxq" path="res://Fonts/KGRedHands.ttf" id="8_ly1k5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8oaco"]
+shader = ExtResource("2_ip83g")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5dt0q"]
+shader = ExtResource("5_dnnac")
+
+[node name="Leaderboard" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1wv0i")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_8oaco")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_hj6bx")
+stretch_mode = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_soe5i")
+theme_override_constants/margin_left = 500
+theme_override_constants/margin_top = 125
+theme_override_constants/margin_right = 500
+theme_override_constants/margin_bottom = 125
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+material = SubResource("ShaderMaterial_5dt0q")
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("2_7qo7o")
+text = "Leaderboard"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RetryButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("7_dnnac")
+theme_override_fonts/font = ExtResource("8_ly1k5")
+theme_override_font_sizes/font_size = 56
+text = "Retry?"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LeaderboardVbox" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ScoreEntry" parent="MarginContainer/VBoxContainer/ScrollContainer/LeaderboardVbox" instance=ExtResource("7_ly1k5")]
+visible = false
+layout_mode = 2
+
+[node name="ScoreEntry2" parent="MarginContainer/VBoxContainer/ScrollContainer/LeaderboardVbox" instance=ExtResource("7_ly1k5")]
+visible = false
+layout_mode = 2
+
+[node name="ScoreEntry3" parent="MarginContainer/VBoxContainer/ScrollContainer/LeaderboardVbox" instance=ExtResource("7_ly1k5")]
+visible = false
+layout_mode = 2
+
+[node name="ScoreEntry4" parent="MarginContainer/VBoxContainer/ScrollContainer/LeaderboardVbox" instance=ExtResource("7_ly1k5")]
+visible = false
+layout_mode = 2
+
+[node name="ScoreEntry5" parent="MarginContainer/VBoxContainer/ScrollContainer/LeaderboardVbox" instance=ExtResource("7_ly1k5")]
+visible = false
+layout_mode = 2
+
+[node name="ScoreEntry6" parent="MarginContainer/VBoxContainer/ScrollContainer/LeaderboardVbox" instance=ExtResource("7_ly1k5")]
+visible = false
+layout_mode = 2
+
+[node name="ScoreEntry7" parent="MarginContainer/VBoxContainer/ScrollContainer/LeaderboardVbox" instance=ExtResource("7_ly1k5")]
+visible = false
+layout_mode = 2
+
+[node name="ScoreEntry8" parent="MarginContainer/VBoxContainer/ScrollContainer/LeaderboardVbox" instance=ExtResource("7_ly1k5")]
+visible = false
+layout_mode = 2
+
+[node name="ScoreEntry9" parent="MarginContainer/VBoxContainer/ScrollContainer/LeaderboardVbox" instance=ExtResource("7_ly1k5")]
+visible = false
+layout_mode = 2
+
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/RetryButton" to="." method="_on_retry_button_pressed"]

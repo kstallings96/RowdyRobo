@@ -1,0 +1,126 @@
+[gd_scene load_steps=7 format=4 uid="uid://bg0dld4asbh6g"]
+
+[ext_resource type="Script" uid="uid://dq8sf47myldlp" path="res://Scripts/phase_3.gd" id="1_bsygr"]
+[ext_resource type="PackedScene" uid="uid://cj1s32in6tw1k" path="res://Scenes/robot.tscn" id="3_54a6q"]
+[ext_resource type="TileSet" uid="uid://cr61rcvxrur8h" path="res://TileSets/Room1TileSet.res" id="3_bsygr"]
+[ext_resource type="PackedScene" uid="uid://cp52gaebpptxg" path="res://Scenes/trash.tscn" id="4_ners4"]
+[ext_resource type="PackedScene" uid="uid://biy6wyjvx4qj3" path="res://Scenes/right_panel.tscn" id="5_54a6q"]
+[ext_resource type="PackedScene" uid="uid://hurva27pe0qy" path="res://Scenes/bottom_panel.tscn" id="9_34bdi"]
+
+[node name="Phase3" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_bsygr")
+
+[node name="VSplitContainer" type="VSplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+split_offset = 800
+dragging_enabled = false
+touch_dragger_enabled = true
+
+[node name="TopPanel" type="Panel" parent="VSplitContainer"]
+layout_mode = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="VSplitContainer/TopPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+split_offset = 1330
+dragging_enabled = false
+touch_dragger_enabled = true
+
+[node name="LeftPanel" type="Panel" parent="VSplitContainer/TopPanel/HSplitContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+stretch_shrink = 6
+
+[node name="SubViewport" type="SubViewport" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel/VBoxContainer/SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(221, 128)
+render_target_update_mode = 4
+
+[node name="TileMapLayer" type="TileMapLayer" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel/VBoxContainer/SubViewportContainer/SubViewport"]
+tile_map_data = PackedByteArray("AAAGAAcAAQAAAAsAAAAEAAcAAQAAAAsAAAADAAcAAQAAAAsAAAACAAcAAQAAAAsAAAABAAcAAQAAAAsAAAAAAAcAAQAAAAsAAAAFAAcAAQAAAAsAAAAHAAcAAQAAAAsAAAAIAAcAAQAAAAsAAAAJAAcAAQAAAAsAAAAKAAcAAQAAAAsAAAALAAcAAQAAAAsAAAAMAAcAAQAAAAsAAAANAAcAAQAAAAsAAAANAAYAAQAAAAsAAAANAAUAAQAAAAsAAAANAAQAAQAAAAsAAAANAAMAAQAAAAsAAAANAAIAAQAAAAsAAAANAAEAAQAAAAsAAAANAAAAAQAAAAsAAAAMAAAAAQAAAAsAAAALAAAAAQAAAAsAAAAKAAAAAQAAAAsAAAAJAAAAAQAAAAsAAAAIAAAAAQAAAAsAAAAHAAAAAQAAAAsAAAAGAAAAAQAAAAsAAAAFAAAAAQAAAAsAAAAEAAAAAQAAAAsAAAADAAAAAQAAAAsAAAACAAAAAQAAAAsAAAAAAAIAAQAAAAsAAAAAAAEAAQAAAAsAAAAAAAMAAQAAAAsAAAAAAAQAAQAAAAsAAAAAAAUAAQAAAAsAAAAAAAYAAQAAAAsAAAAAAAAAAQAAAAsAAAABAAAAAQAAAAsAAAAMAAUAAQAAAAsAAAAKAAUAAQAAAAsAAAAKAAMAAQAAAAsAAAAMAAEAAQAAAAsAAAAKAAEAAQAAAAsAAAAMAAMAAQAAAAsAAAAEAAEAAQAAAAsAAAABAAUAAQAAAAsAAAACAAYAAQAAAAsAAAABAAYAAQAAAAsAAAAIAAUAAQAAAAsAAAAIAAMAAQAAAAsAAAAIAAEAAQAAAAsAAAAFAAIAAQAAAAsAAAAFAAEAAQAAAAsAAAAGAAEAAQAAAAsAAAABAAQAAQAFAAoAAAABAAMAAQAFAAoAAAABAAIAAQAFAAoAAAABAAEAAQAFAAoAAAACAAEAAQAFAAoAAAADAAEAAQAFAAoAAAADAAIAAQAFAAoAAAACAAIAAQAFAAoAAAACAAMAAQAFAAoAAAACAAQAAQAFAAoAAAACAAUAAQAFAAoAAAADAAUAAQAFAAoAAAADAAQAAQAFAAoAAAADAAMAAQAFAAoAAAAEAAMAAQAFAAoAAAAEAAIAAQAFAAoAAAAEAAQAAQAFAAoAAAADAAYAAQAFAAoAAAAEAAYAAQAFAAoAAAAEAAUAAQAFAAoAAAAFAAYAAQAFAAoAAAAGAAYAAQAFAAoAAAAHAAYAAQAFAAoAAAAIAAYAAQAFAAoAAAAJAAYAAQAFAAoAAAAKAAYAAQAFAAoAAAALAAYAAQAFAAoAAAAMAAYAAQAFAAoAAAALAAUAAQAFAAoAAAALAAQAAQAFAAoAAAAMAAQAAQAFAAoAAAAKAAQAAQAFAAoAAAALAAMAAQAFAAoAAAALAAIAAQAFAAoAAAALAAEAAQAFAAoAAAAMAAIAAQAFAAoAAAAKAAIAAQAFAAoAAAAJAAIAAQAFAAoAAAAJAAEAAQAFAAoAAAAJAAMAAQAFAAoAAAAJAAQAAQAFAAoAAAAJAAUAAQAFAAoAAAAIAAQAAQAFAAoAAAAHAAQAAQAFAAoAAAAHAAUAAQAFAAoAAAAGAAUAAQAFAAoAAAAFAAUAAQAFAAoAAAAFAAQAAQAFAAoAAAAFAAMAAQAFAAoAAAAGAAQAAQAFAAoAAAAGAAMAAQAFAAoAAAAGAAIAAQAFAAoAAAAHAAIAAQAFAAoAAAAHAAMAAQAFAAoAAAAHAAEAAQAFAAoAAAAIAAIAAQAFAAoAAAA=")
+tile_set = ExtResource("3_bsygr")
+
+[node name="Robot" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel/VBoxContainer/SubViewportContainer/SubViewport" instance=ExtResource("3_54a6q")]
+position = Vector2(24, 24)
+
+[node name="Trash" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel/VBoxContainer/SubViewportContainer/SubViewport" instance=ExtResource("4_ners4")]
+position = Vector2(24, 72)
+
+[node name="Trash2" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel/VBoxContainer/SubViewportContainer/SubViewport" instance=ExtResource("4_ners4")]
+position = Vector2(72, 40)
+
+[node name="Trash3" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel/VBoxContainer/SubViewportContainer/SubViewport" instance=ExtResource("4_ners4")]
+position = Vector2(120, 24)
+
+[node name="Trash4" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel/VBoxContainer/SubViewportContainer/SubViewport" instance=ExtResource("4_ners4")]
+position = Vector2(200, 40)
+
+[node name="Trash5" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel/VBoxContainer/SubViewportContainer/SubViewport" instance=ExtResource("4_ners4")]
+position = Vector2(184, 24)
+
+[node name="Trash6" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel/VBoxContainer/SubViewportContainer/SubViewport" instance=ExtResource("4_ners4")]
+position = Vector2(184, 72)
+
+[node name="Trash7" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel/VBoxContainer/SubViewportContainer/SubViewport" instance=ExtResource("4_ners4")]
+position = Vector2(152, 104)
+
+[node name="Trash8" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel/VBoxContainer/SubViewportContainer/SubViewport" instance=ExtResource("4_ners4")]
+position = Vector2(136, 72)
+
+[node name="Trash9" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel/VBoxContainer/SubViewportContainer/SubViewport" instance=ExtResource("4_ners4")]
+position = Vector2(88, 72)
+
+[node name="Trash10" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel/VBoxContainer/SubViewportContainer/SubViewport" instance=ExtResource("4_ners4")]
+position = Vector2(104, 56)
+
+[node name="Trash11" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel/VBoxContainer/SubViewportContainer/SubViewport" instance=ExtResource("4_ners4")]
+position = Vector2(56, 88)
+
+[node name="Trash12" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel/VBoxContainer/SubViewportContainer/SubViewport" instance=ExtResource("4_ners4")]
+position = Vector2(88, 104)
+
+[node name="Trash13" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel/VBoxContainer/SubViewportContainer/SubViewport" instance=ExtResource("4_ners4")]
+position = Vector2(40, 40)
+
+[node name="ProgressBar" type="ProgressBar" parent="VSplitContainer/TopPanel/HSplitContainer/LeftPanel/VBoxContainer"]
+layout_mode = 2
+step = 1.0
+
+[node name="RightPanel" parent="VSplitContainer/TopPanel/HSplitContainer" node_paths=PackedStringArray("robot") instance=ExtResource("5_54a6q")]
+layout_mode = 2
+robot = NodePath("../LeftPanel/VBoxContainer/SubViewportContainer/SubViewport/Robot")
+is_phase_3 = true
+
+[node name="BottomPanel" parent="VSplitContainer" instance=ExtResource("9_34bdi")]
+layout_mode = 2
+enabled_movement = true
+enabled_random = true
+enabled_ifs = true

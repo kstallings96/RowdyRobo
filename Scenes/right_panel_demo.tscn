@@ -1,0 +1,140 @@
+[gd_scene load_steps=11 format=3 uid="uid://cyorx7axit2lq"]
+
+[ext_resource type="Script" uid="uid://shndtp8c83rx" path="res://Scripts/right_panel.gd" id="1_45cm2"]
+[ext_resource type="Texture2D" uid="uid://651vug45u1sy" path="res://Sprites/YellowPlaid.jpg" id="2_uienn"]
+[ext_resource type="Theme" uid="uid://b5fspwopkw78g" path="res://Themes/MarginTheme.tres" id="3_sivsy"]
+[ext_resource type="PackedScene" uid="uid://bofbrpbd4rj4n" path="res://Scenes/drop_slot.tscn" id="4_s3jao"]
+[ext_resource type="Texture2D" uid="uid://bxkguh4ptib6x" path="res://Sprites/ButtonUI.png" id="5_jwgbh"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_34bdi"]
+atlas = ExtResource("5_jwgbh")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0svdb"]
+atlas = ExtResource("5_jwgbh")
+region = Rect2(80, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jfvo1"]
+atlas = ExtResource("5_jwgbh")
+region = Rect2(0, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mqydb"]
+atlas = ExtResource("5_jwgbh")
+region = Rect2(96, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_okq8o"]
+atlas = ExtResource("5_jwgbh")
+region = Rect2(80, 16, 16, 16)
+
+[node name="RightPanel" type="Panel"]
+clip_contents = true
+script = ExtResource("1_45cm2")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_uienn")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_sivsy")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="DropSlot" parent="VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_s3jao")]
+layout_mode = 2
+text = " "
+
+[node name="DropSlot2" parent="VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_s3jao")]
+layout_mode = 2
+text = " "
+
+[node name="DropSlot3" parent="VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_s3jao")]
+layout_mode = 2
+text = " "
+
+[node name="DropSlot4" parent="VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_s3jao")]
+layout_mode = 2
+text = " "
+
+[node name="DropSlot5" parent="VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_s3jao")]
+layout_mode = 2
+text = " "
+
+[node name="DropSlot6" parent="VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_s3jao")]
+layout_mode = 2
+text = " "
+
+[node name="DropSlot7" parent="VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer" instance=ExtResource("4_s3jao")]
+layout_mode = 2
+text = " "
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_sivsy")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="PlayButton" type="TextureButton" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Run the code!"
+toggle_mode = true
+texture_normal = SubResource("AtlasTexture_34bdi")
+texture_pressed = SubResource("AtlasTexture_0svdb")
+stretch_mode = 5
+
+[node name="SpeedButton" type="TextureButton" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 112)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Speed up the code"
+toggle_mode = true
+texture_normal = SubResource("AtlasTexture_jfvo1")
+texture_pressed = SubResource("AtlasTexture_mqydb")
+stretch_mode = 5
+
+[node name="SubmitButton" type="TextureButton" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Finalize your algorithm and play it out for 15 seconds to see how it performs!"
+texture_normal = SubResource("AtlasTexture_okq8o")
+stretch_mode = 5
+
+[node name="CodeTimer" type="Timer" parent="."]
+wait_time = 0.5
+autostart = true
+
+[node name="PerformanceTimer" type="Timer" parent="."]
+wait_time = 15.0
+one_shot = true
+
+[connection signal="toggled" from="VBoxContainer/MarginContainer/HBoxContainer/PlayButton" to="." method="_on_play_button_toggled"]
+[connection signal="toggled" from="VBoxContainer/MarginContainer/HBoxContainer/SpeedButton" to="." method="_on_speed_button_toggled"]
+[connection signal="pressed" from="VBoxContainer/MarginContainer/HBoxContainer/SubmitButton" to="." method="_on_submit_button_pressed"]
+[connection signal="timeout" from="CodeTimer" to="." method="_on_code_timer_timeout"]
+[connection signal="timeout" from="PerformanceTimer" to="." method="_on_performance_timer_timeout"]

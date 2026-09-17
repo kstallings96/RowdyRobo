@@ -1,0 +1,17 @@
+~ phase_0
+
+RowdyRobo: Welcome to my garden! I need your help to go in a straight line, cleaning up the trash on my way. 
+- I can help! 
+RowdyRobo: Great! to do that, you’ll snap the blocks together to make your own algorithm. Put the blocks in order and you’ll teach me how to think and move. 
+- I want to CODE! 
+RowdyRobo: Not so fast, let me go over the instructions. 
+- Ok
+RowdyRobo: You see the blocks at the bottom of the screen? You will [wave] click and drag [/wave] them into the empty boxes on the right-hand side. [wait=1]. The code will [wave] loop[/wave], so I will follow the instructions from top to bottom, and then start over at the top. 
+- That makes sense 
+RowdyRobo: The walls and garden shrubs are "objects", I will bump right into them. 
+- ouch 
+RowdyRobo: Right, so lets find a way to get me to go in a straight line down the path! Ready to build? Let’s get coding!
+- I'm ready! => END!
+- I'm not ready! => phase_0
+
+=> END

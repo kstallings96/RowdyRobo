@@ -1,0 +1,18 @@
+~ phase_3
+#if Global.current_student.first_name.is_empty():
+	
+RowdyRobo: Nice Job! You should've discovered a [wave]RANDOM algorithm[/wave], a common algorithm that is amazing at getting around odd shaped rooms 
+#else: 
+	#RowdyRobo: Hi there, {{Global.current_student.first_name}}, I'm RowdyRobo, your coding buddy! Welcome to my world! Let's work together to learn some algorithms [wait=1] (and clean up a little, while we are at it) 
+- Next
+RowdyRobo: This is the warehouse!
+- What is this?
+RowdyRobo: The warehouse is your space to develop your own special algorithm!
+- Great!
+RowdyRobo: You should try to [wave]generalize[/wave] your algorithm so that it can work for as many rooms as possible!
+- I can try?
+RowdyRobo: Great! You should play around with some of the other blocks that we havent used so far.
+- I'm ready! => END!
+- I'm not ready! => phase_3
+
+=> END
