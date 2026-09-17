@@ -59,7 +59,7 @@ Put both values in [`config.json`](config.json) at the project root:
 }
 ```
 
-This file is committed on purpose — see the note in `.gitignore`.
+`config.json` is **gitignored**. Copy `config.example.json` to start.
 
 On a web build the game fetches `/config.json` from whatever host it is served
 from, **not** the copy baked into the `.pck`. That indirection is the point: you
@@ -74,8 +74,10 @@ no gaps.
 
 ## 6. Export the web build
 
-The exported build lives in `web/` and is committed, because **Vercel cannot run
-the Godot exporter**.
+**Vercel cannot run the Godot exporter**, so the build is produced here and
+uploaded. `web/` is gitignored: `index.pck` bakes in whatever `config.json` held
+at export time, so committing it would publish your Supabase key, and each
+export is about 40MB of git history.
 
 ```powershell
 .\tools\export-web.ps1 -Godot "C:\path\to\Godot_v4.5-stable_win64.exe"
@@ -93,7 +95,7 @@ which means no `Cross-Origin-Opener-Policy` / `Cross-Origin-Embedder-Policy`
 headers to get right and nothing extra to debug on school Chromebooks. The
 project already renders with GL Compatibility, so nothing is lost.
 
-Serve `web/` locally and play it through before committing:
+Serve `web/` locally and play it through before deploying:
 
 ```powershell
 python -m http.server 8000 --directory web
@@ -101,28 +103,30 @@ python -m http.server 8000 --directory web
 
 ## 7. Deploy to Vercel
 
-Import the GitHub repo at <https://vercel.com/new>:
-
-- **Framework Preset**: Other
-- **Build Command**: leave empty
-- **Output Directory**: `web`
-
-Or from the command line:
+The build folder is uploaded directly — there is no git-triggered deploy, and
+nothing for Vercel to build:
 
 ```bash
-npx vercel --prod
+cd web
+npx vercel deploy --prod
 ```
 
-[`vercel.json`](vercel.json) already sets the output directory and the security
-headers. It deliberately has **no rewrites** — a single-page-app rewrite like
-MOSAIC's would swallow `index.wasm` and `index.pck`, and a Godot build loads
-those by exact path.
+First run asks you to log in and name the project; after that it is the same two
+lines every time. Deploying the folder rather than the repo is deliberate: a
+push-to-deploy setup would happily ship a stale build whenever you pushed source
+without re-exporting.
+
+[`tools/vercel.json`](tools/vercel.json) is copied into `web/` by the export
+script, because `web/` is the deploy root. It sets the security headers and
+deliberately has **no rewrites** — a single-page-app rewrite like MOSAIC's would
+swallow `index.wasm` and `index.pck`, and a Godot build loads those by exact
+path.
 
 There are no environment variables to set. The credentials travel in
-`web/config.json`, which is part of the deployed build.
+`web/config.json`, which is part of the uploaded folder.
 
-Every later push to `main` redeploys. Re-export first, or you will ship the old
-build with new source.
+**The full loop for any change** is: edit → `tools/export-web.ps1` → play
+through locally → `npx vercel deploy --prod`.
 
 ---
 
@@ -137,14 +141,16 @@ build with new source.
 - **Free Supabase projects pause after about a week idle** and take a minute or
   two to wake. Wake it the morning of, and **test the wake path at least once** —
   the first student otherwise hits a dead endpoint.
-- The web build is a few hundred MB of assets on first load. Load it once on a
-  classroom device and confirm how long it takes on that network.
+- The web build is about **40MB** on first load (36MB of that is the engine
+  itself, `index.wasm`). Load it once on a classroom device and confirm how long
+  that takes on the school network — and remember every student downloads it.
 
 ## If a device never reached the network
 
-Queued events sit in `user://event_queue.json` and go up on the next load of the
-same browser profile, so the fix is usually just to reopen the page on the same
-device while it has a network.
+Queued events sit in `user://event_queue.json` (IndexedDB on web) together with
+the session row in `user://session.json`, and both go up on the next load of the
+same browser profile. The fix is usually just to reopen the page on that same
+device while it has a network — the student does not need to re-enter anything.
 
 On desktop the CSV at `user://student_data.csv` is still written, as it always
 was. On web that path is IndexedDB inside the student's own browser and is not

@@ -6,9 +6,11 @@
 # Stale editor scratch files
 *.tscn[0-9]*.tmp
 
-# NOTE: web/ is deliberately NOT ignored. Vercel cannot run the Godot exporter,
-# so the exported build is committed and served as static files. See DEPLOY.md.
-#
-# config.json is also committed on purpose. The Supabase anon key is public by
-# design — row-level security is what protects the data. The service_role key
-# must never appear in this repo.
+# The exported web build. Deliberately NOT committed: index.pck bakes in
+# whatever config.json held at export time, so committing it would publish the
+# Supabase key, and each export is ~40MB of git history. It is deployed straight
+# to Vercel from tools/export-web.ps1 output instead. See DEPLOY.md.
+/web/
+
+# Real credentials. config.example.json is the committed template.
+/config.json

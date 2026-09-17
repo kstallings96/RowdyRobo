@@ -46,10 +46,15 @@ if ($exportExit -ne 0) {
 
 # The exported .pck carries a copy of config.json, but the served one is what
 # the web build actually reads at startup — that indirection is what lets you
-# repoint a build at another Supabase project without re-exporting.
+# repoint a deployed build at another Supabase project without re-exporting.
 Copy-Item (Join-Path $project 'config.json') (Join-Path $outDir 'config.json') -Force
+
+# vercel.json has to sit beside index.html, because web/ is the deploy root.
+Copy-Item (Join-Path $PSScriptRoot 'vercel.json') (Join-Path $outDir 'vercel.json') -Force
 
 Write-Host "`nExported to $outDir" -ForegroundColor Green
 Get-ChildItem $outDir | Select-Object Name, @{n='Size';e={'{0:N1} MB' -f ($_.Length / 1MB)}} | Format-Table -AutoSize
 
-Write-Host "Next: serve web/ and play it through before committing." -ForegroundColor Yellow
+Write-Host "Next: play it through locally, then deploy:" -ForegroundColor Yellow
+Write-Host "    python -m http.server 8000 --directory web" -ForegroundColor DarkGray
+Write-Host "    cd web; npx vercel deploy --prod" -ForegroundColor DarkGray
