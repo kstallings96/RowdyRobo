@@ -5,7 +5,8 @@ a no-op and events stay on the device. These steps add the backend and put it
 online.
 
 Steps 1, 2 and 7 need an account, so they are yours. Once step 7 is done, every
-push to `main` redeploys the site on its own.
+push to `main` redeploys the site on its own, and you never need Godot installed
+to deploy.
 
 ---
 
@@ -61,8 +62,8 @@ Put both values in `config.json` at the project root:
 
 `config.json` is **gitignored** — copy `config.example.json` to start. This copy
 is only for running the game on your own machine. The deployed site gets its
-credentials from the `SUPABASE_URL` and `SUPABASE_ANON_KEY` repository secrets
-in step 7, so the key is never committed.
+credentials from environment variables on the Vercel project (step 7), so the key
+is never committed.
 
 On a web build the game fetches `/config.json` from whatever host it is served
 from, **not** the copy baked into the `.pck`. That indirection is the point: you
@@ -92,9 +93,10 @@ trying a change in a browser before you push it.
 > discover the week of a study.
 
 `web/` is gitignored, and so is `config.json`: `index.pck` bakes in whatever
-`config.json` held at export time, so committing the build would publish your
-Supabase key, and each export is about 40MB of git history. The workflow builds
-its own copy from the repository secrets.
+`config.json` held at export time, so committing the build from here would
+publish your Supabase key. The workflow exports its own copy with the
+credentials blanked, and refuses to publish a `.pck` that contains a Supabase
+URL.
 
 The preset builds with **thread support off**. That means no `SharedArrayBuffer`,
 which means no `Cross-Origin-Opener-Policy` / `Cross-Origin-Embedder-Policy`
@@ -107,33 +109,33 @@ Serve `web/` locally and play it through before deploying:
 python -m http.server 8000 --directory web
 ```
 
-## 7. Set up deployment (once)
+## 7. Connect Vercel to the deploy branch (once)
 
-**First, stop Vercel building from git.** In the Vercel dashboard → the
-`rowdy-robo` project → **Settings → Git → Disconnect**. If it stays connected,
-Vercel tries to build the repo itself, finds no `web/` folder — it is gitignored
-— and deploys an empty site over the working one.
+Nothing here needs a Vercel token, and there are no GitHub secrets to create.
 
-Then link the project once, from your machine, to get its ids:
+**Set the Supabase credentials on the Vercel project.** In the Vercel dashboard →
+the `rowdy-robo` project → **Settings → Environment Variables**, add both, for
+Production, Preview and Development:
 
-```bash
-cd web
-npx vercel login
-npx vercel link
-```
-
-That writes `web/.vercel/project.json` containing `orgId` and `projectId`.
-
-Now add five **repository secrets** at
-<https://github.com/kstallings96/RowdyRobo/settings/secrets/actions>:
-
-| Secret | Where it comes from |
+| Variable | Value |
 | --- | --- |
-| `VERCEL_TOKEN` | <https://vercel.com/account/tokens> |
-| `VERCEL_ORG_ID` | `orgId` in `web/.vercel/project.json` |
-| `VERCEL_PROJECT_ID` | `projectId` in the same file |
-| `SUPABASE_URL` | Supabase → Project Settings → API |
+| `SUPABASE_URL` | your project URL |
 | `SUPABASE_ANON_KEY` | the anon / publishable key, **never** `service_role` |
+
+These stay out of git entirely. The published build ships with an empty
+`config.json` baked into `index.pck`, and [`tools/write-config.mjs`](tools/write-config.mjs)
+writes the real one next to `index.html` during Vercel's build. That copy is what
+the web build fetches at startup. A missing variable fails the Vercel build on
+purpose, rather than deploying a game that silently records nothing.
+
+**Point Vercel at the `deploy` branch.** Settings → **Git**, connect
+`kstallings96/RowdyRobo`, and set the **Production Branch** to `deploy` — not
+`main`. Leave the build settings alone; `vercel.json` on that branch already sets
+the build command and output directory.
+
+> `main` must **not** be the production branch. It holds source only — the built
+> site is gitignored there — so Vercel would publish an empty site, which is
+> exactly what happened the first time.
 
 That is the whole setup. From then on:
 
@@ -141,20 +143,30 @@ That is the whole setup. From then on:
 git push
 ```
 
-[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) exports the web
-build in CI and uploads it to Vercel. It refuses to deploy if the Supabase
-secrets are missing, if the export produced nothing, or if the deployed URL does
-not actually serve `index.wasm` and `config.json` — the failure that produced a
-silently empty site the first time round.
+## How a deploy actually flows
+
+1. You push to `main`.
+2. [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) exports the
+   Godot web build on a GitHub runner. **You never need Godot installed to
+   deploy.**
+3. It publishes the build to the `deploy` branch as a single orphan commit,
+   replacing whatever was there. The branch never accumulates history, so the
+   repo does not grow by 40MB per export.
+4. Vercel sees the new commit on `deploy`, runs `write-config.mjs` to inject the
+   credentials, and serves `build/`.
+5. The workflow then waits for the live site to serve the exact commit you
+   pushed — it publishes a `version.txt` containing the SHA — and checks that
+   `index.wasm`, `index.pck` and a populated `config.json` all return 200. If any
+   of that fails, the run goes red.
 
 Watch a run at <https://github.com/kstallings96/RowdyRobo/actions>. Doc-only
 changes (`*.md`) do not trigger a deploy, and you can redeploy by hand any time
 with **Run workflow** on that page.
 
-[`tools/vercel.json`](tools/vercel.json) is copied in beside `index.html`,
-because `web/` is the deploy root. It sets the security headers and deliberately
-has **no rewrites** — a single-page-app rewrite like MOSAIC's would swallow
-`index.wasm` and `index.pck`, and a Godot build loads those by exact path.
+[`tools/vercel-deploy.json`](tools/vercel-deploy.json) becomes `vercel.json` on
+the deploy branch. It sets the security headers and deliberately has **no
+rewrites** — a single-page-app rewrite like MOSAIC's would swallow `index.wasm`
+and `index.pck`, and a Godot build loads those by exact path.
 
 ---
 

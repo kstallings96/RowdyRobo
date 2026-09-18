@@ -1,19 +1,19 @@
-name: Export and deploy
+name: Export and publish
 
-# Push to main and the live site updates. The Godot export runs here rather
-# than on Vercel, because Vercel's build container cannot run the Godot binary
-# and the export templates are a 1.3GB download.
+# Push to main -> this exports the Godot web build and publishes it to the
+# `deploy` branch. Vercel is connected to that branch and redeploys on its own.
 #
-# Required repository secrets (Settings -> Secrets and variables -> Actions):
-#   VERCEL_TOKEN        vercel.com/account/tokens
-#   VERCEL_ORG_ID       from web/.vercel/project.json after `npx vercel link`
-#   VERCEL_PROJECT_ID   same file
-#   SUPABASE_URL        your project URL
-#   SUPABASE_ANON_KEY   the publishable / anon key, never service_role
+# The export runs here rather than on Vercel because Vercel's build container
+# cannot run the Godot binary (it links X11 even under --headless) and the
+# export templates are a 1.3GB download. Nobody needs Godot installed to deploy.
 #
-# The Supabase key lives here rather than in the repo so it is not committed,
-# even though it is public by design once deployed. Row-level security is what
-# protects the data — see supabase/schema.sql.
+# `main` stays source-only: the build never lands in its history. The `deploy`
+# branch is replaced wholesale on every run — a single orphan commit — so it
+# does not accumulate 40MB of engine per export either.
+#
+# There are NO secrets to configure here. The Supabase credentials live in the
+# Vercel project's environment variables and are written into the site by
+# tools/write-config.mjs during Vercel's build. See DEPLOY.md.
 
 on:
   push:
@@ -23,19 +23,20 @@ on:
       - 'LICENSE'
   workflow_dispatch:
 
-# A second push while one deploy is running cancels the older one, so the live
-# site always ends up matching the newest commit rather than whichever build
-# happened to finish last.
 concurrency:
-  group: deploy
+  group: publish
   cancel-in-progress: true
+
+permissions:
+  contents: write
 
 env:
   GODOT_VERSION: 4.5
   GODOT_RELEASE: 4.5-stable
+  SITE: https://rowdy-robo.vercel.app
 
 jobs:
-  deploy:
+  publish:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -68,8 +69,7 @@ jobs:
           base="https://github.com/godotengine/godot-builds/releases/download/${GODOT_RELEASE}"
 
           mkdir -p ~/godot-bin
-          curl -fsSL -o /tmp/godot.zip \
-            "${base}/Godot_v${GODOT_RELEASE}_linux.x86_64.zip"
+          curl -fsSL -o /tmp/godot.zip "${base}/Godot_v${GODOT_RELEASE}_linux.x86_64.zip"
           unzip -q /tmp/godot.zip -d ~/godot-bin
           mv ~/godot-bin/Godot_v${GODOT_RELEASE}_linux.x86_64 ~/godot-bin/godot
           chmod +x ~/godot-bin/godot
@@ -77,8 +77,7 @@ jobs:
           # Godot looks for templates under a version-named directory, and the
           # .tpz unpacks to a folder called "templates" that has to be renamed.
           mkdir -p ~/.local/share/godot/export_templates
-          curl -fsSL -o /tmp/templates.tpz \
-            "${base}/Godot_v${GODOT_RELEASE}_export_templates.tpz"
+          curl -fsSL -o /tmp/templates.tpz "${base}/Godot_v${GODOT_RELEASE}_export_templates.tpz"
           unzip -q /tmp/templates.tpz -d /tmp/templates-out
           mv /tmp/templates-out/templates \
              ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
@@ -94,73 +93,113 @@ jobs:
           done
           ~/godot-bin/godot --version
 
-      - name: Write config.json
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-        run: |
-          set -euo pipefail
-          if [ -z "${SUPABASE_URL}" ] || [ -z "${SUPABASE_ANON_KEY}" ]; then
-            echo "SUPABASE_URL / SUPABASE_ANON_KEY are not set."
-            echo "The build would deploy a game that silently records nothing."
-            exit 1
-          fi
-          # Written before the export so the .pck carries it as a fallback; the
-          # copy served next to index.html is what the web build actually reads.
-          jq -n --arg url "$SUPABASE_URL" --arg key "$SUPABASE_ANON_KEY" \
-            '{supabase_url: $url, supabase_anon_key: $key}' > config.json
-
       - name: Export the web build
         run: |
           set -euo pipefail
           mkdir -p web
+
+          # Exported with EMPTY credentials on purpose. Whatever config.json
+          # holds at export time gets baked into index.pck, and the .pck is
+          # published to a public branch. The real values are written next to
+          # index.html by Vercel's build step, and that copy is the one the web
+          # build fetches at startup.
+          printf '{\n  "supabase_url": "",\n  "supabase_anon_key": ""\n}\n' > config.json
+
           # A first pass to build the import cache. Without it the exporter
           # trips over unresolved UIDs on a clean checkout.
           ~/godot-bin/godot --headless --path . --import || true
           ~/godot-bin/godot --headless --path . --export-release Web web/index.html
-          cp tools/vercel.json web/vercel.json
-          cp config.json web/config.json
 
-      - name: Check the build actually produced something
+      - name: Check the export produced something
         run: |
           set -euo pipefail
-          for f in index.html index.js index.wasm index.pck config.json vercel.json; do
+          for f in index.html index.js index.wasm index.pck; do
             test -s "web/$f" || { echo "Missing or empty: web/$f"; exit 1; }
           done
+          # Belt and braces: the published .pck must not carry a real key.
+          if grep -qa "supabase.co" web/index.pck; then
+            echo "index.pck contains a Supabase URL — it was exported with real credentials."
+            exit 1
+          fi
           ls -lh web
 
-      - name: Deploy to Vercel
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          # Passed through the environment rather than interpolated into the
-          # script, so the token never appears in a shell command line.
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      - name: Assemble the deploy tree
         run: |
           set -euo pipefail
-          cd web
-          url=$(npx --yes vercel@latest deploy --prod --yes --token "$VERCEL_TOKEN" | tail -1)
-          echo "Deployed: $url"
+          rm -rf deploy-tree
+          mkdir -p deploy-tree/build
+          cp -r web/. deploy-tree/build/
+
+          # What Vercel reads: vercel.json points at build/ and runs the config
+          # writer before serving it.
+          cp tools/vercel-deploy.json deploy-tree/vercel.json
+          cp tools/write-config.mjs   deploy-tree/write-config.mjs
+
+          # Lets the verification below tell "the new build is live" apart from
+          # "some older build is still being served".
+          echo "${GITHUB_SHA}" > deploy-tree/build/version.txt
+
+          find deploy-tree -maxdepth 2 -printf '%P\n' | sort
+
+      - name: Publish to the deploy branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          cd deploy-tree
+          git init -q
+          git checkout -q -b deploy
+          git add -A
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              commit -q -m "Build of ${GITHUB_SHA}"
+          # Replaced wholesale each run, so the branch never accumulates builds.
+          git push -q --force \
+            "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" deploy
+          echo "Pushed build of ${GITHUB_SHA} to the deploy branch."
+
+      - name: Wait for Vercel and verify the live site
+        run: |
+          set -euo pipefail
+
+          echo "Waiting for ${SITE} to serve this commit..."
+          live=""
+          for attempt in $(seq 1 24); do
+            live=$(curl -fsS "${SITE}/version.txt" 2>/dev/null | tr -d '[:space:]' || true)
+            [ "$live" = "${GITHUB_SHA}" ] && break
+            sleep 15
+          done
+
+          if [ "$live" != "${GITHUB_SHA}" ]; then
+            echo "The live site is not serving this commit after 6 minutes."
+            echo "  expected: ${GITHUB_SHA}"
+            echo "  got:      ${live:-<nothing>}"
+            echo
+            echo "If this is the first run, Vercel is probably not connected to the"
+            echo "deploy branch yet. See step 7 of DEPLOY.md. Otherwise check the"
+            echo "Vercel deployment log — a missing SUPABASE_URL or SUPABASE_ANON_KEY"
+            echo "environment variable fails the build on purpose."
+            exit 1
+          fi
+
+          # A deploy can succeed while serving nothing, which is how this broke
+          # the first time. Check the files the game actually needs.
+          for path in "" index.wasm index.pck config.json; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "${SITE}/${path}")
+            echo "  /${path} -> ${code}"
+            test "$code" = "200" || { echo "Live site is not serving /${path}"; exit 1; }
+          done
+
+          # And that the credentials were actually injected, rather than the
+          # empty placeholder being served.
+          if ! curl -fsS "${SITE}/config.json" | grep -q "supabase.co"; then
+            echo "config.json is served but has no Supabase URL in it."
+            echo "Check SUPABASE_URL / SUPABASE_ANON_KEY on the Vercel project."
+            exit 1
+          fi
+
+          echo "Live and serving ${GITHUB_SHA}."
           {
             echo "### Deployed"
-            echo "$url"
+            echo "${SITE} is now serving \`${GITHUB_SHA}\`."
           } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Smoke-test the deployment
-        run: |
-          set -euo pipefail
-          # Catches the failure mode that started all this: a deploy that
-          # succeeds but serves nothing.
-          site="https://rowdy-robo.vercel.app"
-          for path in "" config.json index.wasm index.pck; do
-            code=000
-            # The production alias can take a few seconds to point at the new
-            # deployment, so a single early 404 is not yet a failure.
-            for attempt in 1 2 3 4 5; do
-              code=$(curl -s -o /dev/null -w '%{http_code}' "$site/$path")
-              [ "$code" = "200" ] && break
-              sleep 5
-            done
-            echo "  /$path -> $code"
-            test "$code" = "200" || { echo "Deployed site is not serving /$path"; exit 1; }
-          done
