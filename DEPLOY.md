@@ -122,6 +122,12 @@ Production, Preview and Development:
 | `SUPABASE_URL` | your project URL |
 | `SUPABASE_ANON_KEY` | the anon / publishable key, **never** `service_role` |
 
+**Tick all three environments** (Production, Preview and Development), not just
+Production. Vercel builds every branch it is connected to, and a build from a
+branch that is not the production branch is a *Preview* deployment — it cannot
+read Production-scoped variables, and `write-config.mjs` fails with
+"SUPABASE_URL / SUPABASE_ANON_KEY are not set" even though you just set them.
+
 These stay out of git entirely. The published build ships with an empty
 `config.json` baked into `index.pck`, and [`tools/write-config.mjs`](tools/write-config.mjs)
 writes the real one next to `index.html` during Vercel's build. That copy is what
