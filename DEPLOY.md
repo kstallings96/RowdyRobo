@@ -128,10 +128,16 @@ writes the real one next to `index.html` during Vercel's build. That copy is wha
 the web build fetches at startup. A missing variable fails the Vercel build on
 purpose, rather than deploying a game that silently records nothing.
 
-**Point Vercel at the `deploy` branch.** Settings → **Git**, connect
-`kstallings96/RowdyRobo`, and set the **Production Branch** to `deploy` — not
-`main`. Leave the build settings alone; `vercel.json` on that branch already sets
-the build command and output directory.
+**Point Vercel at the `deploy` branch.** Two different settings pages, which is
+easy to trip over:
+
+1. **Settings → Git** — connect `kstallings96/RowdyRobo`. This page handles the
+   connection only; the branch setting is no longer here.
+2. **Settings → Environments → Production → Branch Tracking** — change the
+   branch from `main` to **`deploy`**.
+
+Leave the build settings alone; `vercel.json` on that branch already sets the
+build command and output directory.
 
 > `main` must **not** be the production branch. It holds source only — the built
 > site is gitignored there — so Vercel would publish an empty site, which is
