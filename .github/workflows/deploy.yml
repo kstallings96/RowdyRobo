@@ -116,9 +116,14 @@ jobs:
           for f in index.html index.js index.wasm index.pck; do
             test -s "web/$f" || { echo "Missing or empty: web/$f"; exit 1; }
           done
-          # Belt and braces: the published .pck must not carry a real key.
-          if grep -qa "supabase.co" web/index.pck; then
-            echo "index.pck contains a Supabase URL — it was exported with real credentials."
+          # Belt and braces: the published .pck must not carry real credentials.
+          # Matched narrowly on purpose — config.example.json ships a
+          # YOUR-PROJECT-REF.supabase.co placeholder, and an earlier version of
+          # this check failed the build on that.
+          leaked=$(grep -oaE 'https://[a-z0-9]{10,}\.supabase\.co|sb_publishable_[A-Za-z0-9_-]{10,}|eyJ[A-Za-z0-9_-]{30,}' web/index.pck | sort -u || true)
+          if [ -n "$leaked" ]; then
+            echo "index.pck carries real credentials — it was exported with a populated config.json:"
+            echo "$leaked"
             exit 1
           fi
           ls -lh web
