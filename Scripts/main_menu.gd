@@ -2,10 +2,10 @@ extends Control
 
 ## The instructor's key. KSS17 opens every tool in the week — this one,
 ## VibeBuilder and CTx3 — so a facilitator can demo or test a station without
-## borrowing a student's card. It is deliberately a different shape from a
-## student code (three letters, two digits, where students get three and
-## three), so it can never collide with a printed card and its rows are
-## recognisable at a glance in a data dump.
+## borrowing a student's card. It is the same shape as a student code; what
+## keeps it from ever being handed to a student is that the roster generator
+## never emits the digits 0 or 1 — they are misread as O and I off a printed
+## card — and this key contains a 1.
 const INSTRUCTOR_CODE := "KSS17"
 
 @onready var code_box = $MarginContainer/VBoxContainer2/MarginContainer/VBoxContainer/ParticipantCodeLineEdit
@@ -27,7 +27,7 @@ func _normalize_code(raw: String) -> String:
 			cleaned += ch
 	if cleaned == INSTRUCTOR_CODE:
 		return cleaned
-	var shape := RegEx.create_from_string("^[A-Z]{3}[0-9]{3}$")
+	var shape := RegEx.create_from_string("^[A-Z]{3}[0-9]{2}$")
 	if shape.search(cleaned) == null:
 		return ""
 	return cleaned
@@ -44,7 +44,7 @@ func _on_start_button_pressed() -> void:
 
 	var code := _normalize_code(code_box.text)
 	if code == "":
-		_say("Codes look like ABC123 — three letters, then three numbers.")
+		_say("Codes look like ABC12 — three letters, then two numbers.")
 		return
 
 	if first_name == "" or last_name == "":

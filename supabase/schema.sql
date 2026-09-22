@@ -167,8 +167,8 @@ grant select on leaderboard to anon;
 -- RLS posture. Run THAT file; this section exists so a database built from
 -- this file alone still has a roster, and so the two do not silently disagree.
 --
--- Students sign in with a code printed on a card — ABC123, three letters and
--- three digits. The same code identifies that student in VibeBuilder and CTx3,
+-- Students sign in with a code printed on a card — ABC12, three letters and
+-- two digits. The same code identifies that student in VibeBuilder and CTx3,
 -- which is what lets the week's data join on one key. The code is collected
 -- alongside the name, not instead of it: `sessions.first_name` is still how a
 -- teacher matches a device to a paper packet.
@@ -179,7 +179,7 @@ alter table events   add column if not exists participant_code text;
 create index if not exists events_code_idx on events (participant_code, seq);
 
 create table if not exists students (
-  username   text primary key,          -- ABC123
+  username   text primary key,          -- ABC12
   role       text not null default 'student',   -- 'student' | 'instructor'
   cohort     text,
   created_at timestamptz not null default now()
@@ -209,9 +209,10 @@ $$;
 revoke all on function check_roster(text) from public;
 grant execute on function check_roster(text) to anon;
 
--- The instructor key. KSS17 opens every tool in the week and is a different
--- shape from a student code (three letters, two digits) so it can never
--- collide with a printed card. Its rows are real rows — exclude them in
+-- The instructor key. KSS17 opens every tool in the week. It is the same shape
+-- as a student code; what keeps it from ever being handed to a student is that
+-- the generator never emits the digits 0 or 1, and this key contains a 1. Its
+-- rows are real rows — exclude them in
 -- analysis rather than assuming they are not there:
 --
 --   where participant_code <> 'KSS17'
