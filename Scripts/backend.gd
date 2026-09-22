@@ -35,6 +35,12 @@ const EVENT_CODE_SUBMIT := "code_submit"
 # computational-thinking signal. The totals ride along on phase_complete.
 const EVENT_SESSION_END := "session_end"
 
+## Roster lookup outcomes. UNKNOWN is not a failure — it means the question
+## could not be asked, and the caller must let the student through anyway.
+const ROSTER_OK := 1
+const ROSTER_MISSING := 0
+const ROSTER_UNKNOWN := -1
+
 var session_id: String = ""
 
 # Events carry a foreign key to `sessions`, so nothing may be sent until the
@@ -58,6 +64,7 @@ var _queue_http: HTTPRequest
 var _session_http: HTTPRequest
 var _score_http: HTTPRequest
 var _board_http: HTTPRequest
+var _roster_http: HTTPRequest
 
 
 func _ready() -> void:
@@ -65,6 +72,7 @@ func _ready() -> void:
 	_session_http = _make_http()
 	_score_http = _make_http()
 	_board_http = _make_http()
+	_roster_http = _make_http()
 
 	_restore()
 
@@ -99,13 +107,15 @@ func _make_http() -> HTTPRequest:
 ## The id is persisted, so a reload mid-study resumes the same participant
 ## rather than creating a second one. The insert is retried on every start and
 ## a duplicate-key response counts as success — that IS the reload case.
-func start_session(first_name: String, last_initial: String, grade: String) -> String:
+func start_session(first_name: String, last_initial: String, grade: String,
+		participant_code: String = "") -> String:
 	var resumed := session_id != ""
 	if not resumed:
 		session_id = _uuid_v4()
 
 	_session_row = {
 		"id": session_id,
+		"participant_code": participant_code,
 		"first_name": first_name,
 		"last_initial": last_initial,
 		"grade": grade,
@@ -188,6 +198,9 @@ func log_event(type: String, payload: Dictionary = {}) -> void:
 	_seq += 1
 	_queue.append({
 		"session_id": session_id,
+		# The key the week joins on. It is on the session row as well, but
+		# putting it on the event saves every analysis query a join.
+		"participant_code": participant_code(),
 		"seq": _seq,
 		"type": type,
 		"payload": payload,
@@ -324,6 +337,76 @@ func pending_events() -> Array:
 # ---------------------------------------------------------------------------
 # Internals
 # ---------------------------------------------------------------------------
+
+## The participant code for this session, or "" before sign-in. Read back off
+## the persisted session row so a reload keeps stamping the same code.
+func participant_code() -> String:
+	return str(_session_row.get("participant_code", ""))
+
+
+## Is this code on the roster?
+##
+## Returns ROSTER_OK, ROSTER_MISSING, or ROSTER_UNKNOWN when the question could
+## not be asked — no credentials, no network, or no answer in time. UNKNOWN
+## means let the student through: a room with no wifi still has to be able to
+## run the study, and a student stuck on the sign-in screen is a participant
+## you cannot re-run.
+##
+## The roster table itself is unreadable with the anon key. `check_roster` is a
+## security-definer function that answers one yes/no question and returns no
+## rows, so a typo is caught without the class list being exposed.
+func check_roster(code: String) -> int:
+	if not AppConfig.is_configured():
+		return ROSTER_UNKNOWN
+
+	var error := _roster_http.request(
+		"%s/rest/v1/rpc/check_roster" % AppConfig.supabase_url,
+		_read_headers(),
+		HTTPClient.METHOD_POST,
+		JSON.stringify({"code": code})
+	)
+	if error != OK:
+		push_warning("Backend: roster check could not be sent (%d)" % error)
+		return ROSTER_UNKNOWN
+
+	# Never hold a student on the button for a slow network. The timer races
+	# the request and whichever lands first decides.
+	var timeout := get_tree().create_timer(2.5)
+	var result: Variant = await _first_of(_roster_http.request_completed, timeout.timeout)
+	if result == null:
+		_roster_http.cancel_request()
+		return ROSTER_UNKNOWN
+
+	var response: Array = result
+	if int(response[1]) != 200:
+		return ROSTER_UNKNOWN
+	var body: Variant = JSON.parse_string((response[3] as PackedByteArray).get_string_from_utf8())
+	if typeof(body) != TYPE_BOOL:
+		return ROSTER_UNKNOWN
+	return ROSTER_OK if body else ROSTER_MISSING
+
+
+## Awaits two signals and answers with whichever arrives first: the request's
+## argument array, or null when the timer won.
+func _first_of(request_signal: Signal, timeout_signal: Signal) -> Variant:
+	var box := {"value": null, "done": false}
+	var on_request := func(result: int, code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
+		if not box["done"]:
+			box["done"] = true
+			box["value"] = [result, code, headers, body]
+	var on_timeout := func() -> void:
+		if not box["done"]:
+			box["done"] = true
+	request_signal.connect(on_request, CONNECT_ONE_SHOT)
+	timeout_signal.connect(on_timeout, CONNECT_ONE_SHOT)
+	while not box["done"]:
+		await get_tree().process_frame
+	if request_signal.is_connected(on_request):
+		request_signal.disconnect(on_request)
+	if timeout_signal.is_connected(on_timeout):
+		timeout_signal.disconnect(on_timeout)
+	return box["value"]
+
 
 func _rest_url(table: String) -> String:
 	return "%s/rest/v1/%s" % [AppConfig.supabase_url, table]

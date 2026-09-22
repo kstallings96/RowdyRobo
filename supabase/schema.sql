@@ -157,3 +157,76 @@ grant select on leaderboard to anon;
 --   group by s.id, s.first_name
 --   having not bool_or(e.type = 'session_end')
 --   order by events desc;
+
+-- ---------------------------------------------------------------------
+-- PARTICIPANT CODES  (added when the week moved to one shared key)
+--
+-- THE CANONICAL FILE IS CTx3'S. This project's database is now shared with
+-- CTx3, and `ctx3/supabase/schema.sql` is the file that describes the whole
+-- thing — both instruments' columns, the per-instrument dedup indexes, and the
+-- RLS posture. Run THAT file; this section exists so a database built from
+-- this file alone still has a roster, and so the two do not silently disagree.
+--
+-- Students sign in with a code printed on a card — ABC123, three letters and
+-- three digits. The same code identifies that student in VibeBuilder and CTx3,
+-- which is what lets the week's data join on one key. The code is collected
+-- alongside the name, not instead of it: `sessions.first_name` is still how a
+-- teacher matches a device to a paper packet.
+-- ---------------------------------------------------------------------
+alter table sessions add column if not exists participant_code text;
+alter table events   add column if not exists participant_code text;
+
+create index if not exists events_code_idx on events (participant_code, seq);
+
+create table if not exists students (
+  username   text primary key,          -- ABC123
+  role       text not null default 'student',   -- 'student' | 'instructor'
+  cohort     text,
+  created_at timestamptz not null default now()
+);
+
+alter table students add column if not exists role text not null default 'student';
+
+-- Same posture as every other table here: RLS on, no policies for anon, so the
+-- roster cannot be read or enumerated from a browser. Validation goes through
+-- the function below, which answers one yes/no question and returns no rows.
+alter table students enable row level security;
+revoke all on students from anon, authenticated;
+
+create or replace function check_roster(code text)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from students
+    where username = upper(regexp_replace(coalesce(code, ''), '[^A-Za-z0-9]', '', 'g'))
+  );
+$$;
+
+revoke all on function check_roster(text) from public;
+grant execute on function check_roster(text) to anon;
+
+-- The instructor key. KSS17 opens every tool in the week and is a different
+-- shape from a student code (three letters, two digits) so it can never
+-- collide with a printed card. Its rows are real rows — exclude them in
+-- analysis rather than assuming they are not there:
+--
+--   where participant_code <> 'KSS17'
+insert into students (username, role) values ('KSS17', 'instructor')
+on conflict (username) do update set role = 'instructor';
+
+-- DELIBERATELY NO FOREIGN KEY from sessions.participant_code to students. A
+-- foreign key would make an unseeded or misspelled code a hard insert failure,
+-- costing that student their entire session — the one failure this study
+-- cannot absorb. The game checks the roster at sign-in and warns; if the check
+-- cannot be reached, sign-in proceeds anyway, because a classroom with no wifi
+-- still has to be able to run the study.
+--
+-- Find the bad ones in analysis instead:
+--
+--   select distinct participant_code from sessions
+--   where participant_code is not null
+--     and participant_code not in (select username from students);

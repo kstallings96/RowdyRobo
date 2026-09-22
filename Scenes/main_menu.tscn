@@ -97,6 +97,14 @@ theme_override_constants/margin_right = 500
 layout_mode = 2
 theme_override_constants/separation = 29
 
+[node name="ParticipantCodeLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("4_opfnp")
+placeholder_text = "ABC123"
+max_length = 8
+clear_button_enabled = true
+caret_blink = true
+
 [node name="FirstNameLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer2/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("4_opfnp")
@@ -136,6 +144,13 @@ popup/item_6/id = 6
 layout_mode = 2
 theme = ExtResource("4_opfnp")
 text = "Start"
+
+[node name="StatusLabel" type="Label" parent="MarginContainer/VBoxContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("4_opfnp")
+text = ""
+horizontal_alignment = 1
+autowrap_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer2"]
 layout_mode = 2
