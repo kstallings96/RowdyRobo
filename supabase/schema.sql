@@ -209,14 +209,31 @@ $$;
 revoke all on function check_roster(text) from public;
 grant execute on function check_roster(text) to anon;
 
--- The instructor key. KSS17 opens every tool in the week. It is the same shape
--- as a student code; what keeps it from ever being handed to a student is that
--- the generator never emits the digits 0 or 1, and this key contains a 1. Its
--- rows are real rows — exclude them in
--- analysis rather than assuming they are not there:
+-- The facilitator keys. Each opens every tool in the week. KSS* belong to one
+-- facilitator and SAM* to the other. They are the same shape as a student code;
+-- what keeps one from being handed to a student is that no printed participant
+-- code is near one — for this cohort the nearest is three keystrokes away.
+-- Re-check that when the roster changes.
 --
---   where participant_code <> 'KSS17'
-insert into students (username, role) values ('KSS17', 'instructor')
+-- (An earlier note here claimed the generator never emits the digits 0 or 1, so
+-- a code containing one had to be a key. CGU11, AWC18 and IEZ40 are real
+-- participant codes in this cohort, so that test does not hold.)
+--
+-- Their rows are real rows — exclude them in analysis rather than assuming they
+-- are not there. Prefer the role over a hardcoded list, so adding a key later
+-- does not silently reintroduce it into every result:
+--
+--   where participant_code not in (
+--     select username from students where role = 'instructor'
+--   )
+insert into students (username, role) values
+  ('KSS03', 'instructor'),
+  ('KSS11', 'instructor'),
+  ('KSS17', 'instructor'),
+  ('KSS18', 'instructor'),
+  ('SAM12', 'instructor'),
+  ('SAM14', 'instructor'),
+  ('SAM16', 'instructor')
 on conflict (username) do update set role = 'instructor';
 
 -- DELIBERATELY NO FOREIGN KEY from sessions.participant_code to students. A

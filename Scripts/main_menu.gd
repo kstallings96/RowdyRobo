@@ -1,12 +1,25 @@
 extends Control
 
-## The instructor's key. KSS17 opens every tool in the week — this one,
+## The facilitator keys. Each opens every tool in the week — this one,
 ## VibeBuilder and CTx3 — so a facilitator can demo or test a station without
-## borrowing a student's card. It is the same shape as a student code; what
-## keeps it from ever being handed to a student is that the roster generator
-## never emits the digits 0 or 1 — they are misread as O and I off a printed
-## card — and this key contains a 1.
-const INSTRUCTOR_CODE := "KSS17"
+## borrowing a student's card. KSS* belong to one facilitator, SAM* to the
+## other, and within a facilitator they sit close together on purpose: a
+## mistyped key lands on another of that person's own keys, or on nothing,
+## rather than inside a participant's project.
+##
+## That is only safe while no participant code is near one. For the 14 cards
+## printed for this cohort the nearest is three keystrokes away — KSS11/CGU11,
+## KSS18/AWC18, SAM16/KAN66. RE-CHECK THAT when the roster or this list
+## changes; it is the property the whole arrangement rests on.
+##
+## An earlier version of this comment justified the key differently: that the
+## roster generator never emits the digits 0 or 1, so a code containing one
+## had to be a key. That is not true of this cohort — CGU11, AWC18 and IEZ40
+## are all real participant codes — so do not reintroduce that test.
+const INSTRUCTOR_CODES := [
+	"KSS03", "KSS11", "KSS17", "KSS18",
+	"SAM12", "SAM14", "SAM16",
+]
 
 @onready var code_box = $MarginContainer/VBoxContainer2/MarginContainer/VBoxContainer/ParticipantCodeLineEdit
 @onready var status_label = $MarginContainer/VBoxContainer2/MarginContainer/VBoxContainer/StatusLabel
@@ -20,12 +33,16 @@ const INSTRUCTOR_CODE := "KSS17"
 ## one. Cards get read by 11-14 year olds, so lowercase, spaces and stray
 ## dashes are forgiven; anything still not code-shaped is a typo every time,
 ## and is rejected here before the roster is asked.
+func _is_instructor(code: String) -> bool:
+	return INSTRUCTOR_CODES.has(code)
+
+
 func _normalize_code(raw: String) -> String:
 	var cleaned := ""
 	for ch in raw.to_upper():
 		if (ch >= "A" and ch <= "Z") or (ch >= "0" and ch <= "9"):
 			cleaned += ch
-	if cleaned == INSTRUCTOR_CODE:
+	if _is_instructor(cleaned):
 		return cleaned
 	var shape := RegEx.create_from_string("^[A-Z]{3}[0-9]{2}$")
 	if shape.search(cleaned) == null:
@@ -60,9 +77,9 @@ func _on_start_button_pressed() -> void:
 		return
 
 	# Catch a mistyped card before it becomes a participant nobody can account
-	# for. The instructor's key never needs asking, and an unanswered check
-	# lets the student through — see Backend.check_roster.
-	if code != INSTRUCTOR_CODE:
+	# for. A facilitator key never needs asking, and an unanswered check lets
+	# the student through — see Backend.check_roster.
+	if not _is_instructor(code):
 		start_button.disabled = true
 		_say("Checking your code…")
 		# Explicit type: await yields Variant, so := cannot infer int here.
