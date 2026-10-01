@@ -30,6 +30,10 @@ const EVENT_BLOCK_PLACED := "block_placed"
 const EVENT_BLOCK_REMOVED := "block_removed"
 const EVENT_CODE_RUN := "code_run"
 const EVENT_CODE_SUBMIT := "code_submit"
+# The moment a student has both random blocks in the program at once on the
+# random level. It is the insight that level is built to produce, so it is
+# worth being able to ask how long it took rather than only whether it happened.
+const EVENT_RANDOM_COMBO := "random_combo_found"
 # Per-piece trash pickups are deliberately not logged: a level holds hundreds of
 # them and the resulting flood would bury the code events, which are the actual
 # computational-thinking signal. The totals ride along on phase_complete.

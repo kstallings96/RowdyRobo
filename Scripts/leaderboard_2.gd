@@ -53,8 +53,11 @@ func _render(entries: Array) -> void:
 	for child in leaderboard_vbox.get_children():
 		child.queue_free()
 
-	var font := FontFile.new()
-	font.font_data = load("res://Fonts/KGRedHands.ttf")
+	# load() on a .ttf already returns a FontFile. The old code built an empty
+	# one and assigned `font_data`, which is Godot 3's DynamicFont property —
+	# in Godot 4 the assignment is silently ignored, so every row has been
+	# drawn in the fallback font rather than KGRedHands.
+	var font: Font = load("res://Fonts/KGRedHands.ttf")
 
 	for i in range(entries.size()):
 		var entry: Dictionary = entries[i]

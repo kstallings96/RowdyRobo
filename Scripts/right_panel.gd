@@ -84,6 +84,17 @@ func _set_drop_slot_highlight():
 	drop_slots[code_block_index % len(drop_slots)].modulate = Color.AQUA
 	drop_slots[(code_block_index - 1 + len(user_code)) % len(user_code)].modulate = Color.WHITE
 
+## What is sitting in the slots right now, without touching `user_code` —
+## that array belongs to the run loop and rebuilding it here would change what
+## a mid-run program is executing.
+func assigned_actions() -> Array:
+	var out: Array = []
+	for slot in drop_slot_container.get_children():
+		if slot.assigned_action != Global.CodeAction.NULL:
+			out.append(slot.assigned_action)
+	return out
+
+
 func _gather_user_code():
 	user_code.clear()
 	for slot in drop_slot_container.get_children():
