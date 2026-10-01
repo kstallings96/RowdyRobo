@@ -1,16 +1,18 @@
 extends Control
 
 ## The facilitator keys. Each opens every tool in the week — this one,
-## VibeBuilder and CTx3 — so a facilitator can demo or test a station without
+## VibeBuilder and CT Week — so a facilitator can demo or test a station without
 ## borrowing a student's card. KSS* belong to one facilitator, SAM* to the
 ## other, and within a facilitator they sit close together on purpose: a
 ## mistyped key lands on another of that person's own keys, or on nothing,
 ## rather than inside a participant's project.
 ##
-## That is only safe while no participant code is near one. For the 14 cards
-## printed for this cohort the nearest is three keystrokes away — KSS11/CGU11,
-## KSS18/AWC18, SAM16/KAN66. RE-CHECK THAT when the roster or this list
-## changes; it is the property the whole arrangement rests on.
+## That is only safe while no participant code is near one. Re-checked for the
+## 17 cards printed for this cohort: the nearest is still three keystrokes
+## away — KSS11/CGU11, KSS18/AWC18, SAM16/KAN66, and now AFG17/KSS17 with the
+## three codes added on 2026-10-01. RE-CHECK THAT whenever the roster or this
+## list changes; it is the property the whole arrangement rests on, and the
+## check is a Hamming distance over the five characters, not a glance.
 ##
 ## An earlier version of this comment justified the key differently: that the
 ## roster generator never emits the digits 0 or 1, so a code containing one
@@ -48,6 +50,39 @@ func _normalize_code(raw: String) -> String:
 	if shape.search(cleaned) == null:
 		return ""
 	return cleaned
+
+
+## The code, handed over by whichever tool sent them here.
+##
+## CT Week's hub appends `?pc=ABC12` to every tile that links out, because the
+## week only becomes ONE dataset if a student's rows carry the same
+## participant code in every tool. Without this the join depended on an
+## eleven-to-fourteen year old retyping five characters correctly, and a
+## single slip makes them two people in the data — found at analysis, when it
+## is too late to repair.
+##
+## IT PREFILLS AND DOES NOT SUBMIT. A link can be forwarded, pasted, or left
+## in a history on a shared Chromebook, so arriving with a code in the URL is
+## not proof of who is sitting there. The student still presses Start, so a
+## wrong code is visible before it becomes somebody else's session — the same
+## rule VibeBuilder's login screen follows.
+##
+## Web export only. `OS.has_feature("web")` guards it because there is no
+## query string in the editor or in a desktop build, and `JavaScriptBridge`
+## does not exist outside the browser. The name is normalised through
+## `_normalize_code` exactly as typed input is: a malformed `?pc=` is ignored
+## rather than dropped into the box for the student to puzzle over.
+func _ready() -> void:
+	if not OS.has_feature("web"):
+		return
+	var raw: Variant = JavaScriptBridge.eval(
+		"new URLSearchParams(window.location.search).get('pc') || ''", true)
+	if raw == null:
+		return
+	var code := _normalize_code(str(raw))
+	if code == "":
+		return
+	code_box.text = code
 
 
 func _say(message: String) -> void:
