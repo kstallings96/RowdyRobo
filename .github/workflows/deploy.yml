@@ -93,6 +93,24 @@ jobs:
           done
           ~/godot-bin/godot --version
 
+      # Booting the main menu proves almost nothing: GDScript parses a script
+      # only when something loads it, so an error in any level sails past it.
+      # This loads every script and scene, and checks that no CodeAction value
+      # has moved and that every block label is drawable in the slot font.
+      - name: Check every script and scene loads
+        run: |
+          set -euo pipefail
+          ~/godot-bin/godot --headless --path . --import || true
+
+          # Headless Godot does not reliably set an exit code, so the script
+          # prints a sentinel and we look for that instead.
+          out=$(~/godot-bin/godot --headless --path . res://tools/check_all.tscn 2>&1) || true
+          echo "$out"
+          if ! grep -q "CHECK_ALL: OK" <<< "$out"; then
+            echo "::error::Project check failed - a script or scene does not load, an action id moved, or a label is undrawable."
+            exit 1
+          fi
+
       - name: Export the web build
         run: |
           set -euo pipefail
