@@ -1,6 +1,8 @@
 extends Button
 
-const BOOLBLOCKS = [Global.CodeAction.IsObstacleFront, Global.CodeAction.IsObstacleRight, Global.CodeAction.IsObstacleLeft, Global.CodeAction.IsSpaceTravelledFront, Global.CodeAction.IsSpaceTravelledRight, Global.CodeAction.IsSpaceTravelledLeft]
+# Global.CONDITIONALS is the one list; this alias keeps the existing reads
+# below honest rather than letting a second copy drift out of step with it.
+const BOOLBLOCKS = Global.CONDITIONALS
 const RANDBLOCKS = [Global.CodeAction.TurnRandom, Global.CodeAction.MoveRandom]
 var shadow_scene = preload("res://Scenes/code_block_shadow.tscn")
 @export var action_type: Global.CodeAction = Global.CodeAction.NULL
@@ -8,7 +10,7 @@ var shadow_scene = preload("res://Scenes/code_block_shadow.tscn")
 func _ready() -> void:
 	#button_down.connect(_on_button_down)
 	#button_up.connect(_on_button_up)
-	self.text = Global.CodeAction.keys()[action_type]
+	self.text = Global.display_name(action_type)
 	if self.action_type in BOOLBLOCKS:
 		self.modulate = Color.PINK
 	if self.action_type in RANDBLOCKS:

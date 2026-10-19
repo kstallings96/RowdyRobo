@@ -17,6 +17,7 @@ var code_block_index: int = 0
 var user_code: Array[Global.CodeAction] = []
 var clean_time: float = 0
 var goto_next_scene: bool = false
+var last_slot_signature: String = ""
 
 func _ready() -> void:
 	if is_speed_locked:
@@ -79,6 +80,54 @@ func _on_submit_button_pressed() -> void:
 	robot.reset()
 	Global.reset_trash()
 	performance_timer.start()
+
+## Re-marks the guarded blocks whenever the program changes.
+##
+## Two things make this less obvious than "the slot below":
+##
+##   * Empty slots are dropped when the code is gathered, so the block a
+##     conditional guards is the next FILLED slot, which may be further down.
+##   * The program loops. A conditional in the last filled slot guards the
+##     FIRST block, on the next lap round.
+##
+## A conditional followed by another conditional marks nothing: the second one
+## runs regardless and overwrites the first one's answer before any action
+## reads it, so the first is dead. Showing an arrow there would be a lie.
+func _refresh_guard_markers() -> void:
+	var slots: Array = drop_slot_container.get_children()
+
+	var filled: Array = []
+	for slot in slots:
+		if slot.assigned_action != Global.CodeAction.NULL:
+			filled.append(slot)
+
+	for slot in slots:
+		slot.set_guarded(false)
+
+	if filled.size() < 2:
+		return
+
+	for i in range(filled.size()):
+		if not Global.is_conditional(filled[i].assigned_action):
+			continue
+		var guarded = filled[(i + 1) % filled.size()]
+		if not Global.is_conditional(guarded.assigned_action):
+			guarded.set_guarded(true)
+
+
+## Polled rather than signalled: a slot is filled from inside DropSlot._process
+## on a held mouse button, so there is no single place that could emit "the
+## program changed". The comparison is seven integers and the markers are only
+## rebuilt when they actually differ.
+func _process(_delta: float) -> void:
+	var signature := ""
+	for slot in drop_slot_container.get_children():
+		signature += str(int(slot.assigned_action)) + ","
+	if signature == last_slot_signature:
+		return
+	last_slot_signature = signature
+	_refresh_guard_markers()
+
 
 func _set_drop_slot_highlight():
 	drop_slots[code_block_index % len(drop_slots)].modulate = Color.AQUA

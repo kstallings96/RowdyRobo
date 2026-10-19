@@ -17,6 +17,49 @@ enum CodeAction {
 	IsSpaceTravelledLeft,
 }
 
+## What a block says on screen.
+##
+## Deliberately separate from CodeAction. The enum's integer values are how
+## every program a student writes is recorded — see action_array_to_ints — so
+## the names in it have to stay put, while the words an eleven-year-old reads
+## should be free to change. Reword anything here without touching the data;
+## just never REORDER the enum above, which would silently redefine every
+## program already logged.
+##
+## The conditionals read "If ..." rather than "Is ..." because that is what
+## they do: each one guards the single block after it. RowdyRobo already called
+## them if-blocks in the phase 1 dialogue while the buttons said "Is".
+const DISPLAY_NAMES := {
+	CodeAction.IsObstacleFront: "If obstacle ahead",
+	CodeAction.IsObstacleRight: "If obstacle right",
+	CodeAction.IsObstacleLeft: "If obstacle left",
+	CodeAction.IsSpaceTravelledFront: "If cleaned ahead",
+	CodeAction.IsSpaceTravelledRight: "If cleaned right",
+	CodeAction.IsSpaceTravelledLeft: "If cleaned left",
+}
+
+## The blocks that test something instead of doing something. Each sets a flag
+## that the next block checks, so it guards exactly one block — see
+## RowdyRobot.run_action and the guard clause at the top of each _move/_turn.
+const CONDITIONALS := [
+	CodeAction.IsObstacleFront,
+	CodeAction.IsObstacleRight,
+	CodeAction.IsObstacleLeft,
+	CodeAction.IsSpaceTravelledFront,
+	CodeAction.IsSpaceTravelledRight,
+	CodeAction.IsSpaceTravelledLeft,
+]
+
+
+func display_name(action: CodeAction) -> String:
+	if DISPLAY_NAMES.has(action):
+		return DISPLAY_NAMES[action]
+	return CodeAction.keys()[action]
+
+
+func is_conditional(action: CodeAction) -> bool:
+	return CONDITIONALS.has(action)
+
 var current_student: Student = null;
 var is_dragging: bool = false
 var holding_code_block = null

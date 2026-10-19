@@ -1,6 +1,22 @@
 class_name DropSlot extends Button
 
+## Marks the block a conditional guards. The marker and the indent both
+## matter: the marker says "this one belongs to the test above", and the
+## indent is the shape a student will meet again in every language they
+## ever read.
+##
+## It has to be the text rather than `modulate`, because the run loop already
+## owns modulate — aqua for the block executing right now — and the bottom
+## panel's hint glow uses it too.
+##
+## The marker is a guillemet because KG Red Hands, the slot font, has no
+## arrow glyphs at all: U+21B3, U+2192 and U+2514 are each missing and
+## render as an empty box. If the font is ever swapped, check has_char
+## before reaching for a prettier one.
+const GUARD_PREFIX := "      \u00bb "
+
 var assigned_action: Global.CodeAction = Global.CodeAction.NULL
+var is_guarded: bool = false
 var is_hovering: bool = false;
 
 func _ready() -> void:
@@ -40,8 +56,24 @@ func _on_mouse_exited():
 
 func clear_action():
 	self.assigned_action = Global.CodeAction.NULL
-	self.text = " "
+	self.is_guarded = false
+	_refresh_text()
 
 func set_action(action: Global.CodeAction):
 	self.assigned_action = action
-	self.text = Global.CodeAction.keys()[self.assigned_action]
+	_refresh_text()
+
+## Set by the right panel, which is the only thing that can know: whether a
+## block is guarded depends on the whole program, not on this slot.
+func set_guarded(value: bool) -> void:
+	if self.is_guarded == value:
+		return
+	self.is_guarded = value
+	_refresh_text()
+
+func _refresh_text() -> void:
+	if self.assigned_action == Global.CodeAction.NULL:
+		self.text = " "
+		return
+	var label: String = Global.display_name(self.assigned_action)
+	self.text = (GUARD_PREFIX + label) if self.is_guarded else label
