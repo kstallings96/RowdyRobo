@@ -98,6 +98,22 @@ func _ready() -> void:
 
 func _make_http() -> HTTPRequest:
 	var http := HTTPRequest.new()
+
+	# accept_gzip MUST be off. On a web export HTTPRequest goes through the
+	# browser, which has already transparently decompressed the response — so
+	# Godot's own gunzip is handed plain text, fails in stream_peer_gzip, and
+	# returns a mangled body. JSON.parse_string then fails and the caller sees
+	# an empty result.
+	#
+	# It stayed hidden for weeks because every WRITE sends
+	# `Prefer: return=minimal` and so has no body to decompress. Only the reads
+	# broke: the leaderboard came back empty, check_roster could never return
+	# anything but ROSTER_UNKNOWN (so a code that is not on the roster was
+	# always let through on web), and _is_insert_ok could not find "23505" in a
+	# 409 body, which would wedge the queue the first time a student reloaded.
+	# Desktop was fine throughout, which is why it survived testing.
+	http.accept_gzip = false
+
 	add_child(http)
 	return http
 

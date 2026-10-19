@@ -66,6 +66,11 @@ func _load_from_origin() -> void:
 		return
 
 	_http = HTTPRequest.new()
+	# Same reason as Backend._make_http: Godot's gunzip corrupts an already
+	# decompressed body on web. config.json is small enough that the server
+	# may not have compressed it, which would make this the one request that
+	# happened to work — not something to rely on.
+	_http.accept_gzip = false
 	add_child(_http)
 	_http.request_completed.connect(_on_config_fetched)
 
