@@ -69,6 +69,14 @@ theme_override_fonts/font = ExtResource("8_ly1k5")
 theme_override_font_sizes/font_size = 56
 text = "Retry?"
 
+[node name="ExitButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("7_dnnac")
+theme_override_fonts/font = ExtResource("8_ly1k5")
+theme_override_font_sizes/font_size = 56
+text = "I'm done!"
+
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -117,3 +125,4 @@ layout_mode = 2
 
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/RetryButton" to="." method="_on_retry_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ExitButton" to="." method="_on_exit_button_pressed"]

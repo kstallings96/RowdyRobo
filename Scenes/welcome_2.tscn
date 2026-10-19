@@ -10,7 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://db7p5lde12lqi" path="res://icon.svg" id="8_4h6q5"]
 [ext_resource type="Texture2D" uid="uid://bxqovfmhxm4ig" path="res://Sprites/random.png" id="9_4h6q5"]
 [ext_resource type="Theme" uid="uid://bg6m0u6rl2kgy" path="res://Themes/ToolTipText.theme" id="9_bjmxc"]
-[ext_resource type="Texture2D" uid="uid://dxh5atjrfd324" path="res://Sprites/code blocks.png" id="10_bjmxc"]
+[ext_resource type="PackedScene" uid="uid://bofbrpbd4rj4n" path="res://Scenes/drop_slot.tscn" id="10_bjmxc"]
 [ext_resource type="PackedScene" uid="uid://cyorx7axit2lq" path="res://Scenes/right_panel_demo.tscn" id="11_753a1"]
 [ext_resource type="PackedScene" uid="uid://hurva27pe0qy" path="res://Scenes/bottom_panel.tscn" id="12_sbpvk"]
 
@@ -154,6 +154,11 @@ offset_top = 1279.0
 offset_right = 2447.92
 offset_bottom = 1327.24
 
-[node name="CodeBlocks" type="Sprite2D" parent="."]
-position = Vector2(1584, 606)
-texture = ExtResource("10_bjmxc")
+[node name="CodeBlocksDemo" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 1294.0
+offset_top = 294.0
+offset_right = 1874.0
+offset_bottom = 917.0
+mouse_filter = 2
+theme_override_constants/separation = 10

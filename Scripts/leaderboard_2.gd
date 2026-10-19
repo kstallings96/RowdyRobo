@@ -1,6 +1,7 @@
 extends Control
 
 @onready var leaderboard_vbox = get_node_or_null("MarginContainer/VBoxContainer/ScrollContainer/LeaderboardVbox")
+@onready var exit_button = get_node_or_null("MarginContainer/VBoxContainer/ExitButton")
 
 const ENTRY_LIMIT := 10
 
@@ -113,3 +114,16 @@ func _load_csv_as_array(file_path: String) -> Array:
 
 func _on_retry_button_pressed() -> void:
 	get_tree().change_scene_to_file(Paths.PHASE3)
+
+
+## The end of the study, and the handover to the next student.
+##
+## Closing the session here is not tidiness — it is the thing that stops the
+## next student on this device inheriting this one's session id and having
+## their work filed under this student's name. See Backend.clear_session.
+func _on_exit_button_pressed() -> void:
+	if exit_button != null:
+		exit_button.disabled = true
+	await Backend.clear_session()
+	Global.current_student = null
+	get_tree().change_scene_to_file(Paths.MAIN_MENU)

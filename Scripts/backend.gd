@@ -186,6 +186,39 @@ func end_session() -> void:
 	await flush_all()
 
 
+## Closes the session for good, so the next student on this device starts a
+## fresh one.
+##
+## Without this, start_session resumes whatever id is in user://session.json,
+## because `resumed` is simply "is session_id non-empty". On a shared
+## Chromebook that means the second student's events are filed under the first
+## student's session — and the sessions row keeps the FIRST student's name,
+## since re-inserting the same primary key comes back as a duplicate and is
+## counted as success. Two participants silently become one.
+##
+## Deliberately NOT called when the game merely restarts. Reloading a web
+## build drops the student back on the main menu mid-study, and resuming there
+## is the entire point of persisting the id: it stops one refresh turning one
+## participant into two. Finishing is the only honest signal that a session is
+## actually over, which is why only the end screen calls this.
+##
+## The queue is flushed first, and anything still unsent keeps the session_id
+## stamped on each row, so late events are still filed correctly. `seq` restarts
+## at 1 for the new session, which is safe because the unique constraint is on
+## (session_id, seq) rather than on seq alone.
+func clear_session() -> void:
+	await flush_all()
+
+	session_id = ""
+	_session_row = {}
+	_session_ready = false
+	_confirming = false
+	_seq = 0
+
+	_write_json(SESSION_PATH, {})
+	_persist_queue()
+
+
 # ---------------------------------------------------------------------------
 # Events
 # ---------------------------------------------------------------------------
