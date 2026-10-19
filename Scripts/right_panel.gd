@@ -7,6 +7,7 @@ extends Panel
 @onready var performance_timer = $PerformanceTimer
 @onready var play_button = $VBoxContainer/MarginContainer/HBoxContainer/PlayButton
 @onready var speed_button = $VBoxContainer/MarginContainer/HBoxContainer/SpeedButton
+@onready var scoring_label = $VBoxContainer/ScoringLabel
 
 @export var robot: RowdyRobot
 @export var is_phase_3: bool
@@ -119,7 +120,31 @@ func _refresh_guard_markers() -> void:
 ## on a held mouse button, so there is no single place that could emit "the
 ## program changed". The comparison is seven integers and the markers are only
 ## rebuilt when they actually differ.
+## Counts down the fifteen seconds between pressing Submit and the score
+## being taken.
+##
+## Until now that window was invisible: the play and speed buttons disable
+## themselves, the robot keeps moving, and nothing said whether anything was
+## still being measured or the game had simply stopped responding. The
+## SubmitButton tooltip has always promised "play it out for 15 seconds", so
+## this is only making the promise visible — and it reads from
+## performance_timer rather than counting separately, so it cannot disagree
+## with the timer that actually decides.
+func _update_scoring_countdown() -> void:
+	if scoring_label == null:
+		return
+
+	if performance_timer.is_stopped():
+		scoring_label.visible = false
+		return
+
+	scoring_label.text = "Scoring: %ds" % int(ceil(performance_timer.time_left))
+	scoring_label.visible = true
+
+
 func _process(_delta: float) -> void:
+	_update_scoring_countdown()
+
 	var signature := ""
 	for slot in drop_slot_container.get_children():
 		signature += str(int(slot.assigned_action)) + ","
