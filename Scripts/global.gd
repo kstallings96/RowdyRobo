@@ -12,6 +12,12 @@ enum CodeAction {
 	IsObstacleFront,
 	IsObstacleRight,
 	IsObstacleLeft,
+	# RETIRED, and deliberately still here. No level offers these three — their
+	# palette blocks were removed on 2026-10-19 — but the values stay so that
+	# the integers above them never move: every program a student has written
+	# is stored as these numbers, and renumbering would silently rewrite the
+	# history. Do not reuse or reorder them. RowdyRobot still implements the
+	# behaviour if one is ever wanted back.
 	IsSpaceTravelledFront,
 	IsSpaceTravelledRight,
 	IsSpaceTravelledLeft,
@@ -30,9 +36,18 @@ enum CodeAction {
 ## they do: each one guards the single block after it. RowdyRobo already called
 ## them if-blocks in the phase 1 dialogue while the buttons said "Is".
 const DISPLAY_NAMES := {
+	CodeAction.MoveForward: "Move forward",
+	CodeAction.MoveBackward: "Move backward",
+	CodeAction.MoveRandom: "Move randomly",
+	CodeAction.TurnRight: "Turn right",
+	CodeAction.TurnLeft: "Turn left",
+	CodeAction.Turn180: "Turn around",
+	CodeAction.TurnRandom: "Turn randomly",
 	CodeAction.IsObstacleFront: "If obstacle ahead",
 	CodeAction.IsObstacleRight: "If obstacle right",
 	CodeAction.IsObstacleLeft: "If obstacle left",
+	# Retired — see the note on the enum. Named here so that reviving one is a
+	# matter of putting its block back in the palette, not re-deriving a label.
 	CodeAction.IsSpaceTravelledFront: "If cleaned ahead",
 	CodeAction.IsSpaceTravelledRight: "If cleaned right",
 	CodeAction.IsSpaceTravelledLeft: "If cleaned left",
