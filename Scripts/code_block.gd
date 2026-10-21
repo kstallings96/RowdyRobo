@@ -31,6 +31,10 @@ func _ready() -> void:
 	#Global.holding_code_block.queue_free()
 
 func _pressed() -> void:
+	# Whatever was being carried is dropped first. Picking up a second block
+	# used to leave the first one's ghost stranded on screen.
+	Global.cancel_drag()
+
 	Global.is_dragging = true
 	Global.holding_code_block = shadow_scene.instantiate()
 	Global.holding_code_block.text = self.text

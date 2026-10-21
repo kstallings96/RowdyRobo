@@ -48,11 +48,11 @@ func _build_demo_program() -> void:
 
 	for i in range(DEMO_PROGRAM.size() + DEMO_EMPTY_SLOTS):
 		var slot = DROP_SLOT.instantiate()
-		slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		slot.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		demo_slots.add_child(slot)
 		if i < DEMO_PROGRAM.size():
 			slot.set_action(DEMO_PROGRAM[i])
+		slot.set_interactive(false)
 
 	# Show the guard the way a level does: the block after the conditional is
 	# the one it decides about.

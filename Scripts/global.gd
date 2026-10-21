@@ -95,9 +95,30 @@ func _ready():
 	get_tree().set_auto_accept_quit(false)
 
 
+## Drops whatever is being carried and removes its ghost from the screen.
+##
+## Without this, picking up a second block simply overwrote
+## holding_code_block and ORPHANED the first ghost wherever the cursor
+## happened to be — it stopped following the mouse and nothing ever freed it.
+## A student who changed their mind a few times ended up with a pile of dead
+## blocks strewn across the palette, which is what prompted this.
+func cancel_drag() -> void:
+	if holding_code_block != null:
+		holding_code_block.queue_free()
+	holding_code_block = null
+	holding_action = CodeAction.NULL
+	is_dragging = false
+
+
 func _process(delta: float) -> void:
 	if is_tracking_time:
 		Global.total_time_elapsed += delta
+
+	# Right-click anywhere puts a carried block down. A slot ignores
+	# right-click while something is being carried, so the two never fight.
+	if is_dragging and Input.is_action_just_pressed("right_mouse_click"):
+		cancel_drag()
+
 	if is_dragging and holding_code_block != null:
 		holding_code_block.global_position = get_viewport().get_mouse_position() - Global.holding_code_block_offset
 

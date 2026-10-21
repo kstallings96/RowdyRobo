@@ -100,6 +100,11 @@ jobs:
       - name: Check every script and scene loads
         run: |
           set -euo pipefail
+          # Imported twice on purpose. The first pass on a cold project
+          # segfaults intermittently part-way through and leaves a partial
+          # cache, which makes the check below report perfectly good scenes as
+          # broken — a red deploy for no reason. The second pass finishes it.
+          ~/godot-bin/godot --headless --path . --import || true
           ~/godot-bin/godot --headless --path . --import || true
 
           # Headless Godot does not reliably set an exit code, so the script
